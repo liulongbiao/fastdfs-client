@@ -8,6 +8,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.pool.FixedChannelPool;
 import io.netty.util.concurrent.Future;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
@@ -25,7 +26,7 @@ import cn.strong.fastdfs.ex.FastdfsException;
  * @author liulongbiao
  *
  */
-public class FastdfsTemplate {
+public class FastdfsTemplate implements Closeable {
 
 	final NioEventLoopGroup group;
 	final FastdfsChannelPoolMap poolMap;
