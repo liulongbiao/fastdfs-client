@@ -46,7 +46,7 @@ public class FastdfsDecoder extends ReplayingDecoder<Void> {
 			throw new FastdfsException("Expect response command code error : " + cmd);
 		}
 
-		Receiver receiver = ensureGetReceiver(ctx);
+		Receiver<?> receiver = ensureGetReceiver(ctx);
 		long expectLength = receiver.expectLength();
 		if (expectLength >= 0) {
 			if (length != expectLength) {
@@ -60,8 +60,8 @@ public class FastdfsDecoder extends ReplayingDecoder<Void> {
 		checkpoint();
 	}
 
-	private Receiver ensureGetReceiver(ChannelHandlerContext ctx) {
-		Receiver resp = ctx.channel().attr(Receiver.RECEIVER).get();
+	private Receiver<?> ensureGetReceiver(ChannelHandlerContext ctx) {
+		Receiver<?> resp = ctx.channel().attr(Receiver.RECEIVER).get();
 		if (resp == null) {
 			throw new FastdfsException("Receiver is not exist in channel");
 		}
@@ -69,7 +69,7 @@ public class FastdfsDecoder extends ReplayingDecoder<Void> {
 	}
 
 	private void readContent(ChannelHandlerContext ctx, ByteBuf in) {
-		Receiver receiver = ensureGetReceiver(ctx);
+		Receiver<?> receiver = ensureGetReceiver(ctx);
 		Charset charset = Utils.ensureGetCharset(ctx.channel());
 		boolean ended = receiver.tryRead(in, charset);
 		if (ended) {
