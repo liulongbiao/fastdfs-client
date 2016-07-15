@@ -8,6 +8,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.List;
 
 import cn.strong.fastdfs.client.Consts;
 
@@ -90,5 +92,25 @@ public class Utils {
 			ch.attr(Consts.CHARSET).set(charset);
 		}
 		return charset;
+	}
+
+	/**
+	 * 判断集合是否为空
+	 * 
+	 * @param coll
+	 * @return
+	 */
+	public static <T> boolean isEmpty(Collection<T> coll) {
+		return coll == null || coll.isEmpty();
+	}
+
+	/**
+	 * 获取列表头元素
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public static <T> T head(List<T> list) {
+		return isEmpty(list) ? null : list.get(0);
 	}
 }
