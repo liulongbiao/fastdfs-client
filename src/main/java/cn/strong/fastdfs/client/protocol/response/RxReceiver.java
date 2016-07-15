@@ -16,7 +16,7 @@ import rx.subjects.PublishSubject;
  * @author liulongbiao
  *
  */
-public class RxReceiver implements Receiver {
+public class RxReceiver implements Receiver<ByteBuf> {
 
 	private PublishSubject<ByteBuf> subject = PublishSubject.create();
 	private long length;
@@ -44,7 +44,8 @@ public class RxReceiver implements Receiver {
 		}
 	}
 
-	public Observable<ByteBuf> toObservable() {
+	@Override
+	public Observable<ByteBuf> observable() {
 		return subject;
 	}
 }

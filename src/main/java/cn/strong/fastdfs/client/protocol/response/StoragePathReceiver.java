@@ -17,7 +17,7 @@ import cn.strong.fastdfs.model.StoragePath;
  *
  * Created by liulongbiao on 16-7-14.
  */
-public class StoragePathReceiver implements Receiver {
+public class StoragePathReceiver implements Receiver<StoragePath> {
 
     private PublishSubject<StoragePath> subject = PublishSubject.create();
     private int length;
@@ -40,7 +40,8 @@ public class StoragePathReceiver implements Receiver {
         return true;
     }
 
-    public Observable<StoragePath> toObservable() {
+	@Override
+	public Observable<StoragePath> observable() {
         return subject;
     }
 }

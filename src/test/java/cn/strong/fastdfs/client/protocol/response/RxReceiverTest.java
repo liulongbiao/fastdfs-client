@@ -14,7 +14,7 @@ public class RxReceiverTest {
 	public void test() {
 		Charset charset = UTF_8;
 		RxReceiver receiver = new RxReceiver();
-		receiver.toObservable().subscribe(data -> {
+		receiver.observable().subscribe(data -> {
 			System.out.println("received: " + data.toString(charset));
 		}, ex -> {
 			ex.printStackTrace();

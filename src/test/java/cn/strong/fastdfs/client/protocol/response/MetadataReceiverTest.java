@@ -17,7 +17,7 @@ public class MetadataReceiverTest {
 		Charset charset = Charset.isSupported("GBK") ? Charset.forName("GBK") : UTF_8;
 		System.out.println("charset: " + charset.name());
 		MetadataReceiver receiver = new MetadataReceiver();
-		receiver.toObservable().subscribe(data -> {
+		receiver.observable().subscribe(data -> {
 			System.out.println("received: ");
 			data.toMap().forEach((k, v) -> {
 				System.out.println(k + " : " + v);

@@ -15,7 +15,7 @@ public class EmptyReceiverTest {
 	@Ignore
 	public void test() {
 		EmptyReceiver receiver = new EmptyReceiver();
-		receiver.toObservable().subscribe(Actions.empty(), ex -> {
+		receiver.observable().subscribe(Actions.empty(), ex -> {
 			ex.printStackTrace();
 		}, () -> {
 			System.out.println("received");

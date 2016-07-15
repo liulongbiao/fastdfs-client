@@ -20,7 +20,7 @@ public class StoragePathReceiverTest {
     public void test() {
 		Charset charset = UTF_8;
         StoragePathReceiver receiver = new StoragePathReceiver();
-        receiver.toObservable().subscribe(data -> {
+		receiver.observable().subscribe(data -> {
             System.out.println("received: " + data);
         }, ex -> {
             ex.printStackTrace();

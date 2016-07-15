@@ -8,13 +8,16 @@ import io.netty.util.AttributeKey;
 
 import java.nio.charset.Charset;
 
+import rx.Observable;
+
 /**
  * 响应读取器
  * 
  * @author liulongbiao
  *
  */
-public interface Receiver {
+public interface Receiver<T> {
+	@SuppressWarnings("rawtypes")
 	AttributeKey<Receiver> RECEIVER = AttributeKey.valueOf("receiver");
 	
 	/**
@@ -43,4 +46,11 @@ public interface Receiver {
 	 * @return 是否读取完毕
 	 */
 	boolean tryRead(ByteBuf in, Charset charset);
+
+	/**
+	 * 获取 Observable
+	 * 
+	 * @return
+	 */
+	Observable<T> observable();
 }

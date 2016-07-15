@@ -21,7 +21,7 @@ import cn.strong.fastdfs.model.StorageServerInfo;
  *
  * Created by liulongbiao on 16-7-14.
  */
-public class StorageServerInfoListReceiver implements Receiver {
+public class StorageServerInfoListReceiver implements Receiver<List<StorageServerInfo>> {
 
     private PublishSubject<List<StorageServerInfo>> subject = PublishSubject.create();
     private int length;
@@ -60,7 +60,8 @@ public class StorageServerInfoListReceiver implements Receiver {
         return true;
     }
 
-    public Observable<List<StorageServerInfo>> toObservable() {
+	@Override
+	public Observable<List<StorageServerInfo>> observable() {
         return subject;
     }
 }

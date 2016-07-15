@@ -16,7 +16,7 @@ import rx.subjects.PublishSubject;
  * @author liulongbiao
  *
  */
-public class EmptyReceiver implements Receiver {
+public class EmptyReceiver implements Receiver<Void> {
 
 	private PublishSubject<Void> subject = PublishSubject.create();
 
@@ -31,7 +31,8 @@ public class EmptyReceiver implements Receiver {
 		return true;
 	}
 
-	public Observable<Void> toObservable() {
+	@Override
+	public Observable<Void> observable() {
 		return subject;
 	}
 }

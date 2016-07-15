@@ -18,7 +18,7 @@ import cn.strong.fastdfs.model.StorageServerInfo;
  *
  * Created by liulongbiao on 16-7-14.
  */
-public class StorageServerInfoReceiver implements Receiver {
+public class StorageServerInfoReceiver implements Receiver<StorageServerInfo> {
 
     private PublishSubject<StorageServerInfo> subject = PublishSubject.create();
 
@@ -38,7 +38,8 @@ public class StorageServerInfoReceiver implements Receiver {
         return true;
     }
 
-    public Observable<StorageServerInfo> toObservable() {
+	@Override
+	public Observable<StorageServerInfo> observable() {
         return subject;
     }
 }

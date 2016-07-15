@@ -10,6 +10,9 @@ import java.nio.charset.Charset;
 
 import org.junit.Test;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
 import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.client.protocol.response.Receiver;
 import cn.strong.fastdfs.utils.Utils;
@@ -18,6 +21,15 @@ public class FastdfsDecoderTest {
 
 	@Test
 	public void test() {
+		StubReceiver receiver = new StubReceiver();
+		receiver.observable().subscribe(txt -> {
+			System.out.println("response: " + txt);
+		}, ex -> {
+			ex.printStackTrace();
+		}, () -> {
+			System.out.println("completed");
+		});
+
 		String msg = "Hello world!";
 		byte[] bytes = msg.getBytes();
 		ByteBuf buf = Unpooled.buffer();
@@ -28,7 +40,7 @@ public class FastdfsDecoderTest {
 
 		FastdfsDecoder handler = new FastdfsDecoder();
 		EmbeddedChannel channel = new EmbeddedChannel(handler);
-		channel.attr(Receiver.RECEIVER).set(new StubReceiver());
+		channel.attr(Receiver.RECEIVER).set(receiver);
 		channel.attr(Consts.CHARSET).set(UTF_8);
 
 		// write bytes
@@ -36,8 +48,8 @@ public class FastdfsDecoderTest {
 		channel.finish();
 	}
 
-	private static class StubReceiver implements Receiver {
-
+	private static class StubReceiver implements Receiver<String> {
+		private PublishSubject<String> subject = PublishSubject.create();
 		private long length;
 
 		@Override
@@ -48,9 +60,14 @@ public class FastdfsDecoderTest {
 		@Override
 		public boolean tryRead(ByteBuf in, Charset charset) {
 			String txt = Utils.readString(in, (int) length, charset);
-			System.out.println("response: " + txt);
+			subject.onNext(txt);
+			subject.onCompleted();
 			return true;
 		}
 
+		@Override
+		public Observable<String> observable() {
+			return subject;
+		}
 	}
 }

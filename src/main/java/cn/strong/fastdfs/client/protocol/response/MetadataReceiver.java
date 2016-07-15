@@ -21,7 +21,7 @@ import cn.strong.fastdfs.utils.Utils;
  * @author liulongbiao
  *
  */
-public class MetadataReceiver implements Receiver {
+public class MetadataReceiver implements Receiver<Metadata> {
 
 	private PublishSubject<Metadata> subject = PublishSubject.create();
 	private int length;
@@ -47,7 +47,8 @@ public class MetadataReceiver implements Receiver {
 		return true;
 	}
 
-	public Observable<Metadata> toObservable() {
+	@Override
+	public Observable<Metadata> observable() {
 		return subject;
 	}
 

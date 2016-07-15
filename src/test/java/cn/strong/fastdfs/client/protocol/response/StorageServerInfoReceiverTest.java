@@ -21,7 +21,7 @@ public class StorageServerInfoReceiverTest {
     public void test() {
 		Charset charset = US_ASCII;
         StorageServerInfoReceiver receiver = new StorageServerInfoReceiver();
-        receiver.toObservable().subscribe(data -> {
+		receiver.observable().subscribe(data -> {
             System.out.println("received: " + data);
         }, ex -> {
             ex.printStackTrace();
