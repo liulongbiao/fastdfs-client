@@ -81,11 +81,11 @@ public class FastdfsChannelPoolMap extends
 				LOG.info("channel created : {}", ch.toString());
 			}
 			ChannelPipeline pipeline = ch.pipeline();
-			pipeline.addLast(new ConnectionWatchdog());
 			int maxIdleSeconds = settings.getMaxIdleSeconds();
 			if(maxIdleSeconds > 0) {
 				pipeline.addLast(new IdleStateHandler(0, 0, maxIdleSeconds));
 			}
+			pipeline.addLast(new ConnectionWatchdog());
 			pipeline.addLast(new ChunkedWriteHandler(), FastdfsEncoder.INSTANCE,
 					new FastdfsDecoder());
 		}
