@@ -3,9 +3,13 @@
  */
 package cn.strong.fastdfs.utils;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 
 import java.nio.charset.Charset;
+
+import cn.strong.fastdfs.client.Consts;
 
 /**
  * 工具类
@@ -71,5 +75,20 @@ public class Utils {
 		}
 		int idx = filename.lastIndexOf('.');
 		return idx == -1 ? "" : filename.substring(idx + 1).toLowerCase();
+	}
+
+	/**
+	 * 获取 channel 中的 Charset 属性
+	 * 
+	 * @param ch
+	 * @return
+	 */
+	public static Charset ensureGetCharset(Channel ch) {
+		Charset charset = ch.attr(Consts.CHARSET).get();
+		if (charset == null) {
+			charset = UTF_8;
+			ch.attr(Consts.CHARSET).set(charset);
+		}
+		return charset;
 	}
 }
