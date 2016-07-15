@@ -3,8 +3,9 @@
  */
 package cn.strong.fastdfs.client.protocol.request;
 
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.buffer.ByteBufAllocator;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -16,10 +17,11 @@ import java.util.List;
 public interface Request {
 
 	/**
-	 * 编码内容，并防止到 out 中
+	 * 编码内容，并放到 out 中
 	 * 
-	 * @param ctx
+	 * @param alloc
 	 * @param out
+	 * @param charset
 	 */
-	void encode(ChannelHandlerContext ctx, List<Object> out);
+	void encode(ByteBufAllocator alloc, List<Object> out, Charset charset);
 }
