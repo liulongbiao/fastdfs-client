@@ -1,11 +1,12 @@
 package cn.strong.fastdfs.client.handler;
 
 import static cn.strong.fastdfs.client.CommandCodes.FDFS_PROTO_CMD_RESP;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 import org.junit.Test;
 
@@ -28,6 +29,7 @@ public class FastdfsDecoderTest {
 		FastdfsDecoder handler = new FastdfsDecoder();
 		EmbeddedChannel channel = new EmbeddedChannel(handler);
 		channel.attr(Receiver.RECEIVER).set(new StubReceiver());
+		channel.attr(Consts.CHARSET).set(UTF_8);
 
 		// write bytes
 		channel.writeInbound(buf);
@@ -44,8 +46,8 @@ public class FastdfsDecoderTest {
 		}
 
 		@Override
-		public boolean tryRead(ByteBuf in) {
-			String txt = Utils.readString(in, (int) length, StandardCharsets.UTF_8);
+		public boolean tryRead(ByteBuf in, Charset charset) {
+			String txt = Utils.readString(in, (int) length, charset);
 			System.out.println("response: " + txt);
 			return true;
 		}

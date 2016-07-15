@@ -1,7 +1,10 @@
 package cn.strong.fastdfs.client.protocol.response;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+
+import java.nio.charset.Charset;
 
 import org.junit.Test;
 
@@ -11,6 +14,8 @@ public class MetadataReceiverTest {
 
 	@Test
 	public void test() {
+		Charset charset = Charset.isSupported("GBK") ? Charset.forName("GBK") : UTF_8;
+		System.out.println("charset: " + charset.name());
 		MetadataReceiver receiver = new MetadataReceiver();
 		receiver.toObservable().subscribe(data -> {
 			System.out.println("received: ");
@@ -31,11 +36,11 @@ public class MetadataReceiverTest {
 		sb.append("key2");
 		sb.append(Consts.FDFS_FIELD_SEPERATOR);
 		sb.append("value1");
-		byte[] bytes = sb.toString().getBytes();
+		byte[] bytes = sb.toString().getBytes(charset);
 		buf.writeBytes(bytes);
 		
 		receiver.setLength(bytes.length);
-		receiver.tryRead(buf);
+		receiver.tryRead(buf, charset);
 	}
 
 }
