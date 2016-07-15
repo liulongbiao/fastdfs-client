@@ -3,6 +3,10 @@
  */
 package cn.strong.fastdfs.client;
 
+import io.netty.util.AttributeKey;
+
+import java.nio.charset.Charset;
+
 /**
  * 常量定义
  * 
@@ -34,4 +38,6 @@ public interface Consts {
 	String FDFS_RECORD_SEPERATOR = "\u0001";
 	String FDFS_FIELD_SEPERATOR = "\u0002";
 	byte ERRNO_OK = 0;
+
+	AttributeKey<Charset> CHARSET = AttributeKey.valueOf("charset");
 }
