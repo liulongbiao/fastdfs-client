@@ -14,7 +14,7 @@ public class Settings {
 	private int eventLoopThreads = 0; // 线程数量
 	private int maxConnPerHost = 10; // 每个IP最大连接数
 	private int timeout = 10000; // 超时时间(毫秒)
-	private int maxIdleSeconds = 20; // 最大闲置时间(秒)
+	private int maxIdleSeconds = 300; // 最大闲置时间(秒)
 	private String charset = "UTF-8"; // 字符集
 
 	public int getEventLoopThreads() {
