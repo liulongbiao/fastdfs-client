@@ -10,10 +10,8 @@ import java.nio.charset.Charset;
 
 import org.junit.Test;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
 import cn.strong.fastdfs.client.Consts;
+import cn.strong.fastdfs.client.protocol.response.AbstractReceiver;
 import cn.strong.fastdfs.client.protocol.response.Receiver;
 import cn.strong.fastdfs.utils.Utils;
 
@@ -48,8 +46,7 @@ public class FastdfsDecoderTest {
 		channel.finish();
 	}
 
-	private static class StubReceiver implements Receiver<String> {
-		private PublishSubject<String> subject = PublishSubject.create();
+	private static class StubReceiver extends AbstractReceiver<String> {
 		private long length;
 
 		@Override
@@ -63,11 +60,6 @@ public class FastdfsDecoderTest {
 			subject.onNext(txt);
 			subject.onCompleted();
 			return true;
-		}
-
-		@Override
-		public Observable<String> observable() {
-			return subject;
 		}
 	}
 }

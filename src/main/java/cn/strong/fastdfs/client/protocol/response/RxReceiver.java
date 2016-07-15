@@ -7,18 +7,14 @@ import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
 /**
  * Rx 响应接收器
  * 
  * @author liulongbiao
  *
  */
-public class RxReceiver implements Receiver<ByteBuf> {
+public class RxReceiver extends AbstractReceiver<ByteBuf> {
 
-	private PublishSubject<ByteBuf> subject = PublishSubject.create();
 	private long length;
 	private long readed = 0;
 
@@ -42,10 +38,5 @@ public class RxReceiver implements Receiver<ByteBuf> {
 		} else {
 			return false;
 		}
-	}
-
-	@Override
-	public Observable<ByteBuf> observable() {
-		return subject;
 	}
 }

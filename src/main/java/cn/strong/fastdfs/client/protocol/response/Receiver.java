@@ -48,6 +48,13 @@ public interface Receiver<T> {
 	boolean tryRead(ByteBuf in, Charset charset);
 
 	/**
+	 * 设置错误
+	 * 
+	 * @param ex
+	 */
+	void tryError(Throwable ex);
+
+	/**
 	 * 获取 Observable
 	 * 
 	 * @return

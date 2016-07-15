@@ -10,9 +10,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.model.StorageServerInfo;
 
@@ -21,9 +18,8 @@ import cn.strong.fastdfs.model.StorageServerInfo;
  *
  * Created by liulongbiao on 16-7-14.
  */
-public class StorageServerInfoListReceiver implements Receiver<List<StorageServerInfo>> {
+public class StorageServerInfoListReceiver extends AbstractReceiver<List<StorageServerInfo>> {
 
-    private PublishSubject<List<StorageServerInfo>> subject = PublishSubject.create();
     private int length;
 
     @Override
@@ -58,10 +54,5 @@ public class StorageServerInfoListReceiver implements Receiver<List<StorageServe
         subject.onNext(result);
         subject.onCompleted();
         return true;
-    }
-
-	@Override
-	public Observable<List<StorageServerInfo>> observable() {
-        return subject;
     }
 }

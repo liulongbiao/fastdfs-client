@@ -6,9 +6,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.model.StoragePath;
 
@@ -17,9 +14,8 @@ import cn.strong.fastdfs.model.StoragePath;
  *
  * Created by liulongbiao on 16-7-14.
  */
-public class StoragePathReceiver implements Receiver<StoragePath> {
+public class StoragePathReceiver extends AbstractReceiver<StoragePath> {
 
-    private PublishSubject<StoragePath> subject = PublishSubject.create();
     private int length;
 
     @Override
@@ -38,10 +34,5 @@ public class StoragePathReceiver implements Receiver<StoragePath> {
         subject.onNext(new StoragePath(group, path));
         subject.onCompleted();
         return true;
-    }
-
-	@Override
-	public Observable<StoragePath> observable() {
-        return subject;
     }
 }

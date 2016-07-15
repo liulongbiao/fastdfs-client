@@ -8,9 +8,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
 import cn.strong.fastdfs.model.StorageServerInfo;
 
 /**
@@ -18,9 +15,7 @@ import cn.strong.fastdfs.model.StorageServerInfo;
  *
  * Created by liulongbiao on 16-7-14.
  */
-public class StorageServerInfoReceiver implements Receiver<StorageServerInfo> {
-
-    private PublishSubject<StorageServerInfo> subject = PublishSubject.create();
+public class StorageServerInfoReceiver extends AbstractReceiver<StorageServerInfo> {
 
     @Override
     public long expectLength() {
@@ -36,10 +31,5 @@ public class StorageServerInfoReceiver implements Receiver<StorageServerInfo> {
         subject.onNext(new StorageServerInfo(group, host, port, idx));
         subject.onCompleted();
         return true;
-    }
-
-	@Override
-	public Observable<StorageServerInfo> observable() {
-        return subject;
     }
 }

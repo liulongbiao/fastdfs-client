@@ -9,9 +9,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
 
-import rx.Observable;
-import rx.subjects.PublishSubject;
-
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.utils.Utils;
 
@@ -21,9 +18,8 @@ import cn.strong.fastdfs.utils.Utils;
  * @author liulongbiao
  *
  */
-public class MetadataReceiver implements Receiver<Metadata> {
+public class MetadataReceiver extends AbstractReceiver<Metadata> {
 
-	private PublishSubject<Metadata> subject = PublishSubject.create();
 	private int length;
 
 	@Override
@@ -45,11 +41,6 @@ public class MetadataReceiver implements Receiver<Metadata> {
 		subject.onNext(result);
 		subject.onCompleted();
 		return true;
-	}
-
-	@Override
-	public Observable<Metadata> observable() {
-		return subject;
 	}
 
 }
