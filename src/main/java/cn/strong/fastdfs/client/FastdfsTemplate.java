@@ -58,7 +58,7 @@ public class FastdfsTemplate implements Closeable {
 				Channel ch = f.getNow();
 				receiver.observable().doAfterTerminate(() -> {
 					pool.release(ch);
-				});
+				}).subscribe();
 				try {
 					ch.attr(Receiver.RECEIVER).set(receiver);
 					ch.writeAndFlush(request);
