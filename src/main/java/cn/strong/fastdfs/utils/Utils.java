@@ -48,4 +48,14 @@ public class Utils {
 	public static String readString(ByteBuf in, int length, Charset charset) {
 		return in.readBytes(length).toString(charset).trim();
 	}
+
+	/**
+	 * 判断字符串为空
+	 * 
+	 * @param content
+	 * @return
+	 */
+	public static boolean isEmpty(String content) {
+		return content == null || content.isEmpty();
+	}
 }
