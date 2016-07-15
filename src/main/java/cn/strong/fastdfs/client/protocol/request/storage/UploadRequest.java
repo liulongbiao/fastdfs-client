@@ -7,11 +7,11 @@ import static cn.strong.fastdfs.client.Consts.FDFS_PROTO_PKG_LEN_SIZE;
 import static cn.strong.fastdfs.client.Consts.FDFS_STORE_PATH_INDEX_LEN;
 import static cn.strong.fastdfs.utils.Utils.getFileExt;
 import static cn.strong.fastdfs.utils.Utils.writeFixLength;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
 import java.io.File;
+import java.nio.charset.Charset;
 
 import cn.strong.fastdfs.client.CommandCodes;
 
@@ -39,12 +39,12 @@ public class UploadRequest extends AbstractFileRequest {
 	}
 
 	@Override
-	protected ByteBuf meta(ByteBufAllocator alloc) {
+	protected ByteBuf meta(ByteBufAllocator alloc, Charset charset) {
 		int metaLen = FDFS_STORE_PATH_INDEX_LEN + FDFS_PROTO_PKG_LEN_SIZE + FDFS_FILE_EXT_LEN;
 		ByteBuf buf = alloc.buffer(metaLen);
 		buf.writeByte(storePathIndex);
 		buf.writeLong(size);
-		writeFixLength(buf, ext, FDFS_FILE_EXT_LEN, UTF_8);
+		writeFixLength(buf, ext, FDFS_FILE_EXT_LEN, charset);
 		return buf;
 	}
 

@@ -10,9 +10,8 @@ import static cn.strong.fastdfs.client.Consts.FDFS_LONG_LEN;
 import static cn.strong.fastdfs.client.Consts.FDFS_RECORD_SEPERATOR;
 import static cn.strong.fastdfs.client.Consts.HEAD_LEN;
 import static cn.strong.fastdfs.utils.Utils.writeFixLength;
-import static io.netty.util.CharsetUtil.UTF_8;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.buffer.ByteBufAllocator;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -43,12 +42,12 @@ public class SetMetadataRequest implements Request {
 	}
 
 	@Override
-	public void encode(ChannelHandlerContext ctx, List<Object> out) {
-		byte[] pathBytes = spath.path.getBytes(UTF_8);
-		byte[] metadatas = toBytes(metadata, UTF_8);
+	public void encode(ByteBufAllocator alloc, List<Object> out, Charset charset) {
+		byte[] pathBytes = spath.path.getBytes(charset);
+		byte[] metadatas = toBytes(metadata, charset);
 		int length = 2 * FDFS_LONG_LEN + 1 + FDFS_GROUP_LEN + pathBytes.length + metadatas.length;
 		byte cmd = CommandCodes.STORAGE_PROTO_CMD_SET_METADATA;
-		ByteBuf buf = ctx.alloc().buffer(length + HEAD_LEN);
+		ByteBuf buf = alloc.buffer(length + HEAD_LEN);
 		buf.writeLong(length);
 		buf.writeByte(cmd);
 		buf.writeByte(ERRNO_OK);
@@ -56,7 +55,7 @@ public class SetMetadataRequest implements Request {
 		buf.writeLong(pathBytes.length);
 		buf.writeLong(metadatas.length);
 		buf.writeByte(flag);
-		writeFixLength(buf, spath.group, FDFS_GROUP_LEN, UTF_8);
+		writeFixLength(buf, spath.group, FDFS_GROUP_LEN, charset);
 		buf.writeBytes(pathBytes);
 		buf.writeBytes(metadatas);
 

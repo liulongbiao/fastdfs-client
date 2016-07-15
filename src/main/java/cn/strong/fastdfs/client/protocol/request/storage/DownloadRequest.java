@@ -9,11 +9,10 @@ import static cn.strong.fastdfs.client.Consts.FDFS_GROUP_LEN;
 import static cn.strong.fastdfs.client.Consts.FDFS_LONG_LEN;
 import static cn.strong.fastdfs.client.Consts.HEAD_LEN;
 import static cn.strong.fastdfs.utils.Utils.writeFixLength;
-import static io.netty.util.CharsetUtil.UTF_8;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.buffer.ByteBufAllocator;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,19 +45,19 @@ public class DownloadRequest implements Request {
 	}
 
 	@Override
-	public void encode(ChannelHandlerContext ctx, List<Object> out) {
-		byte[] pathBytes = spath.path.getBytes(UTF_8);
+	public void encode(ByteBufAllocator alloc, List<Object> out, Charset charset) {
+		byte[] pathBytes = spath.path.getBytes(charset);
 		int length = 2 * FDFS_LONG_LEN + FDFS_GROUP_LEN + pathBytes.length;
 		byte cmd = STORAGE_PROTO_CMD_DOWNLOAD_FILE;
-		ByteBuf buf = ctx.alloc().buffer(length + HEAD_LEN);
+		ByteBuf buf = alloc.buffer(length + HEAD_LEN);
 		buf.writeLong(length);
 		buf.writeByte(cmd);
 		buf.writeByte(ERRNO_OK);
 
 		buf.writeLong(offset);
 		buf.writeLong(size);
-		writeFixLength(buf, spath.group, FDFS_GROUP_LEN, UTF_8);
-		ByteBufUtil.writeUtf8(buf, spath.path);
+		writeFixLength(buf, spath.group, FDFS_GROUP_LEN, charset);
+		buf.writeBytes(pathBytes);
 		out.add(buf);
 	}
 

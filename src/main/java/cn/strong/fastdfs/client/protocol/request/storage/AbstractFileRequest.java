@@ -8,7 +8,6 @@ import static cn.strong.fastdfs.client.Consts.HEAD_LEN;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.DefaultFileRegion;
 import io.netty.channel.FileRegion;
 import io.netty.handler.stream.ChunkedInput;
@@ -18,6 +17,7 @@ import io.netty.handler.stream.ChunkedStream;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
 
@@ -72,9 +72,8 @@ public abstract class AbstractFileRequest implements Request {
 	}
 
 	@Override
-	public void encode(ChannelHandlerContext ctx, List<Object> out) {
-		ByteBufAllocator alloc = ctx.alloc();
-		ByteBuf meta = meta(alloc);
+	public void encode(ByteBufAllocator alloc, List<Object> out, Charset charset) {
+		ByteBuf meta = meta(alloc, charset);
 
 		ByteBuf head = alloc.buffer(HEAD_LEN);
 		head.writeLong(meta.readableBytes() + size);
@@ -99,6 +98,6 @@ public abstract class AbstractFileRequest implements Request {
 	 * @param alloc
 	 * @return
 	 */
-	protected abstract ByteBuf meta(ByteBufAllocator alloc);
+	protected abstract ByteBuf meta(ByteBufAllocator alloc, Charset charset);
 
 }

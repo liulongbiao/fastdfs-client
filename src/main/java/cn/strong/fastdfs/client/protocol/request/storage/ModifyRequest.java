@@ -3,11 +3,11 @@
  */
 package cn.strong.fastdfs.client.protocol.request.storage;
 
-import static io.netty.util.CharsetUtil.UTF_8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
 import java.io.File;
+import java.nio.charset.Charset;
 
 import cn.strong.fastdfs.client.CommandCodes;
 import cn.strong.fastdfs.client.Consts;
@@ -42,8 +42,8 @@ public class ModifyRequest extends AbstractFileRequest {
 	}
 
 	@Override
-	protected ByteBuf meta(ByteBufAllocator alloc) {
-		byte[] pathBytes = spath.path.getBytes(UTF_8);
+	protected ByteBuf meta(ByteBufAllocator alloc, Charset charset) {
+		byte[] pathBytes = spath.path.getBytes(charset);
 		int metaLen = 3 * Consts.FDFS_PROTO_PKG_LEN_SIZE + pathBytes.length;
 		ByteBuf buf = alloc.buffer(metaLen);
 		buf.writeLong(pathBytes.length);

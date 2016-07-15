@@ -10,10 +10,10 @@ import static cn.strong.fastdfs.client.Consts.FDFS_GROUP_LEN;
 import static cn.strong.fastdfs.client.Consts.HEAD_LEN;
 import static cn.strong.fastdfs.utils.Utils.isEmpty;
 import static cn.strong.fastdfs.utils.Utils.writeFixLength;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.buffer.ByteBufAllocator;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 import cn.strong.fastdfs.client.protocol.request.Request;
@@ -33,16 +33,16 @@ public class GetUploadStorageRequest implements Request {
 	}
 
 	@Override
-	public void encode(ChannelHandlerContext ctx, List<Object> out) {
+	public void encode(ByteBufAllocator alloc, List<Object> out, Charset charset) {
 		int length = isEmpty(group) ? 0 : FDFS_GROUP_LEN;
 		byte cmd = isEmpty(group) ? TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITHOUT_GROUP_ONE
 				: TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITH_GROUP_ONE;
-		ByteBuf buf = ctx.alloc().buffer(length + HEAD_LEN);
+		ByteBuf buf = alloc.buffer(length + HEAD_LEN);
 		buf.writeLong(length);
 		buf.writeByte(cmd);
 		buf.writeByte(ERRNO_OK);
 		if (!isEmpty(group)) {
-			writeFixLength(buf, group, FDFS_GROUP_LEN, UTF_8);
+			writeFixLength(buf, group, FDFS_GROUP_LEN, charset);
 		}
 		out.add(buf);
 	}

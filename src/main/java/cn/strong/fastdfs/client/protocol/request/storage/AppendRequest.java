@@ -3,11 +3,11 @@
  */
 package cn.strong.fastdfs.client.protocol.request.storage;
 
-import static io.netty.util.CharsetUtil.UTF_8;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
 import java.io.File;
+import java.nio.charset.Charset;
 
 import cn.strong.fastdfs.client.CommandCodes;
 import cn.strong.fastdfs.client.Consts;
@@ -39,10 +39,10 @@ public class AppendRequest extends AbstractFileRequest {
 	}
 
 	@Override
-	protected ByteBuf meta(ByteBufAllocator alloc) {
-		int metaLen = 2 * Consts.FDFS_PROTO_PKG_LEN_SIZE + spath.path.getBytes(UTF_8).length;
+	protected ByteBuf meta(ByteBufAllocator alloc, Charset charset) {
+		byte[] pathBytes = spath.path.getBytes(charset);
+		int metaLen = 2 * Consts.FDFS_PROTO_PKG_LEN_SIZE + pathBytes.length;
 		ByteBuf buf = alloc.buffer(metaLen);
-		byte[] pathBytes = spath.path.getBytes(UTF_8);
 		buf.writeLong(pathBytes.length);
 		buf.writeLong(size);
 		buf.writeBytes(pathBytes);

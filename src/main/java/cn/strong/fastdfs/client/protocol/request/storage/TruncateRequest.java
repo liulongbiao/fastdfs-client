@@ -6,10 +6,10 @@ package cn.strong.fastdfs.client.protocol.request.storage;
 import static cn.strong.fastdfs.client.Consts.ERRNO_OK;
 import static cn.strong.fastdfs.client.Consts.FDFS_PROTO_PKG_LEN_SIZE;
 import static cn.strong.fastdfs.client.Consts.HEAD_LEN;
-import static io.netty.util.CharsetUtil.UTF_8;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.buffer.ByteBufAllocator;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 import cn.strong.fastdfs.client.CommandCodes;
@@ -33,11 +33,11 @@ public class TruncateRequest implements Request {
 	}
 
 	@Override
-	public void encode(ChannelHandlerContext ctx, List<Object> out) {
-		byte[] pathBytes = spath.path.getBytes(UTF_8);
+	public void encode(ByteBufAllocator alloc, List<Object> out, Charset charset) {
+		byte[] pathBytes = spath.path.getBytes(charset);
 		int length = 2 * FDFS_PROTO_PKG_LEN_SIZE + pathBytes.length;
 		byte cmd = CommandCodes.STORAGE_PROTO_CMD_TRUNCATE_FILE;
-		ByteBuf buf = ctx.alloc().buffer(length + HEAD_LEN);
+		ByteBuf buf = alloc.buffer(length + HEAD_LEN);
 		buf.writeLong(length);
 		buf.writeByte(cmd);
 		buf.writeByte(ERRNO_OK);
