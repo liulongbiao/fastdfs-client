@@ -10,6 +10,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.strong.fastdfs.client.protocol.response.Receiver;
 import cn.strong.fastdfs.ex.FastdfsTimeoutException;
 
 /**
@@ -34,6 +35,10 @@ public class ConnectionWatchdog extends ChannelInboundHandlerAdapter {
 			LOG.info(cause.getMessage(), cause);
 		} else {
 			LOG.error(cause.getMessage(), cause);
+		}
+		Receiver<?> receiver = ctx.channel().attr(Receiver.RECEIVER).get();
+		if (receiver != null) {
+			receiver.tryError(cause);
 		}
 		ctx.close();
 	}
