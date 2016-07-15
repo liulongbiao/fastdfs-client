@@ -4,6 +4,9 @@
 package cn.strong.fastdfs.client.protocol.response;
 
 import io.netty.buffer.ByteBuf;
+
+import java.nio.charset.Charset;
+
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -25,7 +28,7 @@ public class RxReceiver implements Receiver {
 	}
 
 	@Override
-	public boolean tryRead(ByteBuf in) {
+	public boolean tryRead(ByteBuf in, Charset charset) {
 		if (length <= readed) {
 			return true;
 		}

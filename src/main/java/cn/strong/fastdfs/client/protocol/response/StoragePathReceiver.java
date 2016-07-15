@@ -1,14 +1,16 @@
 package cn.strong.fastdfs.client.protocol.response;
 
-import cn.strong.fastdfs.ex.FastdfsException;
-import cn.strong.fastdfs.model.StoragePath;
+import static cn.strong.fastdfs.client.Consts.FDFS_GROUP_LEN;
+import static cn.strong.fastdfs.utils.Utils.readString;
 import io.netty.buffer.ByteBuf;
+
+import java.nio.charset.Charset;
+
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-import static cn.strong.fastdfs.client.Consts.FDFS_GROUP_LEN;
-import static cn.strong.fastdfs.utils.Utils.readString;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import cn.strong.fastdfs.ex.FastdfsException;
+import cn.strong.fastdfs.model.StoragePath;
 
 /**
  * 存储路径响应接收器
@@ -26,13 +28,13 @@ public class StoragePathReceiver implements Receiver {
     }
 
     @Override
-    public boolean tryRead(ByteBuf in) {
+	public boolean tryRead(ByteBuf in, Charset charset) {
         if (length <= FDFS_GROUP_LEN) {
             throw new FastdfsException("body length : " + length
                     + ", is lte required group name length 16.");
         }
-        String group = readString(in, FDFS_GROUP_LEN, UTF_8);
-        String path = readString(in, length - FDFS_GROUP_LEN, UTF_8);
+		String group = readString(in, FDFS_GROUP_LEN, charset);
+		String path = readString(in, length - FDFS_GROUP_LEN, charset);
         subject.onNext(new StoragePath(group, path));
         subject.onCompleted();
         return true;

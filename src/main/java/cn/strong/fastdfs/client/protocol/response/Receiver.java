@@ -6,6 +6,8 @@ package cn.strong.fastdfs.client.protocol.response;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.AttributeKey;
 
+import java.nio.charset.Charset;
+
 /**
  * 响应读取器
  * 
@@ -37,7 +39,8 @@ public interface Receiver {
 	 * 尝试读取内容
 	 * 
 	 * @param in
+	 * @param charset
 	 * @return 是否读取完毕
 	 */
-	boolean tryRead(ByteBuf in);
+	boolean tryRead(ByteBuf in, Charset charset);
 }

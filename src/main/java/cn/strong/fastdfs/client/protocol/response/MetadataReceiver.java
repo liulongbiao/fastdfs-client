@@ -7,7 +7,7 @@ import static cn.strong.fastdfs.client.Consts.FDFS_FIELD_SEPERATOR;
 import static cn.strong.fastdfs.client.Consts.FDFS_RECORD_SEPERATOR;
 import io.netty.buffer.ByteBuf;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -32,9 +32,9 @@ public class MetadataReceiver implements Receiver {
 	}
 
 	@Override
-	public boolean tryRead(ByteBuf in) {
+	public boolean tryRead(ByteBuf in, Charset charset) {
 		Metadata result = new Metadata();
-		String content = Utils.readString(in, length, StandardCharsets.UTF_8);
+		String content = Utils.readString(in, length, charset);
 		String[] pairs = content.split(FDFS_RECORD_SEPERATOR);
 		for (String pair : pairs) {
 			String[] kv = pair.split(FDFS_FIELD_SEPERATOR, 2);
