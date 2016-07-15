@@ -58,6 +58,9 @@ public class FastdfsDecoder extends ReplayingDecoder<Void> {
 
 		head = false;
 		checkpoint();
+
+		// 马上调用一次 readContent，防止 EmptyReceiver 不会走 readContent
+		readContent(ctx, in);
 	}
 
 	private Receiver<?> ensureGetReceiver(ChannelHandlerContext ctx) {
