@@ -7,9 +7,11 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 import cn.strong.fastdfs.client.protocol.request.Request;
+import cn.strong.fastdfs.utils.Utils;
 
 /**
  * Fastdfs 请求发送处理器
@@ -25,7 +27,8 @@ public class FastdfsEncoder extends MessageToMessageEncoder<Request> {
 	@Override
 	protected void encode(ChannelHandlerContext ctx, Request msg, List<Object> out)
 			throws Exception {
-		msg.encode(ctx, out);
+		Charset charset = Utils.ensureGetCharset(ctx.channel());
+		msg.encode(ctx.alloc(), out, charset);
 	}
 
 }
