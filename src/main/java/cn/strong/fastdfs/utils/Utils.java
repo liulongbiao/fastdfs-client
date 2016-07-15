@@ -58,4 +58,18 @@ public class Utils {
 	public static boolean isEmpty(String content) {
 		return content == null || content.isEmpty();
 	}
+
+	/**
+	 * 获取文件扩展名
+	 * 
+	 * @param filename
+	 * @return
+	 */
+	public static String getFileExt(String filename) {
+		if (filename == null) {
+			return "";
+		}
+		int idx = filename.lastIndexOf('.');
+		return idx == -1 ? "" : filename.substring(idx + 1).toLowerCase();
+	}
 }
