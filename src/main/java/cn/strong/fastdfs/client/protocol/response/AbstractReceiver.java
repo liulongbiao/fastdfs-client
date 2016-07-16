@@ -4,7 +4,7 @@
 package cn.strong.fastdfs.client.protocol.response;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.subjects.ReplaySubject;
 
 /**
  * 抽象接收器类
@@ -13,7 +13,7 @@ import rx.subjects.PublishSubject;
  *
  */
 public abstract class AbstractReceiver<T> implements Receiver<T> {
-	protected PublishSubject<T> subject = PublishSubject.create();
+	protected ReplaySubject<T> subject = ReplaySubject.create();
 
 	@Override
 	public void tryError(Throwable ex) {
