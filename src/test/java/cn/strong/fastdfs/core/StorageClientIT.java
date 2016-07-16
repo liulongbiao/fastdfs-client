@@ -169,7 +169,7 @@ public class StorageClientIT {
 	}
 
 	@Test
-	// @Ignore
+	@Ignore
 	public void testDownload() throws InterruptedException, IOException {
 		StorageServerInfo info = new StorageServerInfo("group1", "192.168.20.68", 23000);
 		StoragePath spath = StoragePath
