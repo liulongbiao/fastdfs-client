@@ -111,4 +111,23 @@ public class FastdfsClientIT {
 		});
 		latch.await();
 	}
+
+	@Test
+	@Ignore
+	public void testDownload2() throws InterruptedException {
+		StoragePath spath = StoragePath
+				.fromFullPath("group1/M00/04/02/wKgURFT9aMOARe1WALF9eCfe4O8163.mp3");
+		File file = new File("D:\\tmp\\test.mp3");
+		CountDownLatch latch = new CountDownLatch(1);
+		IOUtils.write(client.download(spath), file).doAfterTerminate(latch::countDown)
+				.subscribe(len -> {
+					System.out.println("received: " + len);
+				}, ex -> {
+					ex.printStackTrace();
+				}, () -> {
+					System.out.println("completed");
+				});
+		latch.await();
+		System.out.println("file size: " + file.length());
+	}
 }

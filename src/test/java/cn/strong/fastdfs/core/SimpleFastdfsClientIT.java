@@ -2,6 +2,7 @@ package cn.strong.fastdfs.core;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
@@ -53,4 +54,11 @@ public class SimpleFastdfsClientIT {
 		System.out.println("downloaded: " + data);
 	}
 
+	@Test
+	@Ignore
+	public void testDownloadToFile() {
+		String path = "group1/M00/04/02/wKgURFT9aMOARe1WALF9eCfe4O8163.mp3";
+		File file = new File("D:\\tmp\\test.mp3");
+		client.download(path, file);
+	}
 }
