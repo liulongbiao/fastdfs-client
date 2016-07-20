@@ -23,6 +23,30 @@ public class TrackerAddress {
 			.asList(new InetSocketAddress(DFT_HOST, DFT_PORT)));
 
 	/**
+	 * 创建 tracker 种子，默认顺序选取策略
+	 * 
+	 * @param uris
+	 * @return Tracker 地址种子
+	 */
+	public static Seed<InetSocketAddress> createSeed(String uris) {
+		return createSeed(uris);
+	}
+
+	/**
+	 * 创建 tracker 种子
+	 * 
+	 * @param uris
+	 *            以逗号分隔的地址
+	 * @param strategy
+	 *            选取策略
+	 * @return Tracker 地址种子
+	 */
+	public static Seed<InetSocketAddress> createSeed(String uris, int strategy) {
+		List<InetSocketAddress> addrs = parseTrackers(uris);
+		return Seed.create(addrs, strategy);
+	}
+
+	/**
 	 * 解析 Tracker 地址
 	 * 
 	 * @param uris
