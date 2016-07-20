@@ -23,6 +23,20 @@
 			<organizationUrl>http://www.leke.cn</organizationUrl>
 		</developer>
 	</developers>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Team Nexus Snapshot Repository</name>
+			<url>http://192.168.20.62:8080/nexus/content/repositories/snapshots/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+		<repository>
+			<id>nexus-release</id>
+			<name>Team Nexus Release Repository</name>
+			<url>http://192.168.20.62:8080/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
 
 	<scm>
 		<url>https://github.com/liulongbiao/fastdfs-client.git</url>
