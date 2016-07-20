@@ -5,7 +5,6 @@ package cn.strong.fastdfs.core;
 
 import static cn.strong.fastdfs.model.StoragePath.fromFullPath;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import rx.Observable;
@@ -14,6 +13,7 @@ import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.model.StoragePath;
+import cn.strong.fastdfs.utils.IOUtils;
 
 /**
  * 简单 FastDFS 客户端
@@ -32,7 +32,13 @@ public class SimpleFastdfsClient {
 		this.delegate = delegate;
 	}
 
-	private static <T> T awaitSingle(Observable<T> observable) {
+	/**
+	 * 等待单个结果的 Observable
+	 * 
+	 * @param observable
+	 * @return
+	 */
+	private static <T> T await(Observable<T> observable) {
 		try {
 			return observable.toBlocking().single();
 		} catch (Exception e) {
@@ -65,8 +71,7 @@ public class SimpleFastdfsClient {
 	 * @return 服务器存储路径
 	 */
 	public String upload(byte[] bytes, String ext, String group) {
-		return awaitSingle(delegate.upload(bytes, bytes.length, ext, group).map(
-				StoragePath::getFullPath));
+		return await(delegate.upload(bytes, bytes.length, ext, group).map(StoragePath::getFullPath));
 	}
 
 	/**
@@ -93,7 +98,7 @@ public class SimpleFastdfsClient {
 		if (file == null || !file.exists()) {
 			throw new FastdfsException("file does not exist.");
 		}
-		return awaitSingle(delegate.upload(file, group).map(StoragePath::getFullPath));
+		return await(delegate.upload(file, group).map(StoragePath::getFullPath));
 	}
 
 	/**
@@ -121,7 +126,7 @@ public class SimpleFastdfsClient {
 	 * @return 服务器存储路径
 	 */
 	public String uploadAppender(byte[] bytes, String ext, String group) {
-		return awaitSingle(delegate.uploadAppender(bytes, bytes.length, ext, group).map(
+		return await(delegate.uploadAppender(bytes, bytes.length, ext, group).map(
 				StoragePath::getFullPath));
 	}
 
@@ -149,7 +154,7 @@ public class SimpleFastdfsClient {
 		if (file == null || !file.exists()) {
 			throw new FastdfsException("file does not exist.");
 		}
-		return awaitSingle(delegate.uploadAppender(file, group).map(StoragePath::getFullPath));
+		return await(delegate.uploadAppender(file, group).map(StoragePath::getFullPath));
 	}
 
 	/**
@@ -160,15 +165,19 @@ public class SimpleFastdfsClient {
 	 * @return 文件内容
 	 */
 	public byte[] download(String path) {
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		delegate.download(fromFullPath(path)).toBlocking().forEach(buf -> {
-			try {
-				buf.readBytes(output, buf.readableBytes());
-			} catch (Exception e) {
-				throw new FastdfsException("read downloaded bytes error", e);
-			}
-		});
-		return output.toByteArray();
+		return await(IOUtils.toBytes(delegate.download(fromFullPath(path))));
+	}
+
+	/**
+	 * 下载文件到指定文件中
+	 * 
+	 * @param path
+	 *            服务器存储路径
+	 * @param file
+	 *            待写入的文件
+	 */
+	public void download(String path, File file) {
+		await(IOUtils.write(delegate.download(fromFullPath(path)), file));
 	}
 
 	/**
@@ -178,8 +187,7 @@ public class SimpleFastdfsClient {
 	 *            服务器存储路径
 	 */
 	public void delete(String path) {
-		StoragePath spath = fromFullPath(path);
-		awaitSingle(delegate.delete(spath));
+		await(delegate.delete(fromFullPath(path)));
 	}
 
 	/**
@@ -191,8 +199,7 @@ public class SimpleFastdfsClient {
 	 *            追加内容
 	 */
 	public void append(String path, byte[] bytes) {
-		StoragePath spath = fromFullPath(path);
-		awaitSingle(delegate.append(spath, bytes));
+		await(delegate.append(fromFullPath(path), bytes));
 	}
 
 	/**
@@ -206,8 +213,7 @@ public class SimpleFastdfsClient {
 	 *            修改内容
 	 */
 	public void modify(String path, int offset, byte[] bytes) {
-		StoragePath spath = fromFullPath(path);
-		awaitSingle(delegate.modify(spath, offset, bytes));
+		await(delegate.modify(fromFullPath(path), offset, bytes));
 	}
 
 	/**
@@ -229,8 +235,7 @@ public class SimpleFastdfsClient {
 	 *            截取字节数
 	 */
 	public void truncate(String path, int truncatedSize) {
-		StoragePath spath = fromFullPath(path);
-		awaitSingle(delegate.truncate(spath, truncatedSize));
+		await(delegate.truncate(fromFullPath(path), truncatedSize));
 	}
 
 	/**
@@ -256,8 +261,7 @@ public class SimpleFastdfsClient {
 	 *            设置标识
 	 */
 	public void setMetadata(String path, Metadata metadata, byte flag) {
-		StoragePath spath = fromFullPath(path);
-		awaitSingle(delegate.setMetadata(spath, metadata, flag));
+		await(delegate.setMetadata(fromFullPath(path), metadata, flag));
 	}
 
 	/**
@@ -267,7 +271,6 @@ public class SimpleFastdfsClient {
 	 * @return
 	 */
 	public Metadata getMetadata(String path) {
-		StoragePath spath = fromFullPath(path);
-		return awaitSingle(delegate.getMetadata(spath));
+		return await(delegate.getMetadata(fromFullPath(path)));
 	}
 }
