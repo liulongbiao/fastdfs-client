@@ -13,7 +13,7 @@ import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.model.StoragePath;
-import cn.strong.fastdfs.utils.IOUtils;
+import cn.strong.fastdfs.utils.RxIOUtils;
 
 /**
  * 简单 FastDFS 客户端
@@ -165,7 +165,7 @@ public class SimpleFastdfsClient {
 	 * @return 文件内容
 	 */
 	public byte[] download(String path) {
-		return await(IOUtils.toBytes(delegate.download(fromFullPath(path))));
+		return await(RxIOUtils.toBytes(delegate.download(fromFullPath(path))));
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class SimpleFastdfsClient {
 	 *            待写入的文件
 	 */
 	public void download(String path, File file) {
-		await(IOUtils.write(delegate.download(fromFullPath(path)), file));
+		await(RxIOUtils.write(delegate.download(fromFullPath(path)), file));
 	}
 
 	/**

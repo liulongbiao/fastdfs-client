@@ -22,7 +22,7 @@ import rx.subjects.ReplaySubject;
  * @author liulongbiao
  *
  */
-public class IOUtils {
+public class RxIOUtils {
 	/**
 	 * 关闭
 	 * 
@@ -67,12 +67,12 @@ public class IOUtils {
 			});
 			return subject;
 		}, fc -> {
-			IOUtils.closeQuietly(fc);
+			RxIOUtils.closeQuietly(fc);
 		});
 	}
 
 	private static FileChannel openFileChannel(File file) {
-		IOUtils.initFileToWrite(file);
+		RxIOUtils.initFileToWrite(file);
 		try {
 			return FileChannel.open(file.toPath(), StandardOpenOption.WRITE);
 		} catch (IOException e) {
@@ -131,7 +131,7 @@ public class IOUtils {
 			});
 			return subject;
 		}, output -> {
-			IOUtils.closeQuietly(output);
+			RxIOUtils.closeQuietly(output);
 		});
 	}
 }

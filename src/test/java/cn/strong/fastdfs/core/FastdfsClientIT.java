@@ -25,7 +25,7 @@ import rx.subjects.ReplaySubject;
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.Settings;
 import cn.strong.fastdfs.model.StoragePath;
-import cn.strong.fastdfs.utils.IOUtils;
+import cn.strong.fastdfs.utils.RxIOUtils;
 import cn.strong.fastdfs.utils.Seed;
 
 /**
@@ -48,7 +48,7 @@ public class FastdfsClientIT {
 
 	@After
 	public void destroy() {
-		IOUtils.closeQuietly(template);
+		RxIOUtils.closeQuietly(template);
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class FastdfsClientIT {
 			});
 			return subject;
 		}, ch -> {
-			IOUtils.closeQuietly(ch);
+			RxIOUtils.closeQuietly(ch);
 		}).doAfterTerminate(latch::countDown).subscribe(len -> {
 			System.out.println("received: " + len);
 		}, ex -> {
@@ -119,7 +119,7 @@ public class FastdfsClientIT {
 				.fromFullPath("group1/M00/04/02/wKgURFT9aMOARe1WALF9eCfe4O8163.mp3");
 		File file = new File("D:\\tmp\\test.mp3");
 		CountDownLatch latch = new CountDownLatch(1);
-		IOUtils.write(client.download(spath), file).doAfterTerminate(latch::countDown)
+		RxIOUtils.write(client.download(spath), file).doAfterTerminate(latch::countDown)
 				.subscribe(len -> {
 					System.out.println("received: " + len);
 				}, ex -> {

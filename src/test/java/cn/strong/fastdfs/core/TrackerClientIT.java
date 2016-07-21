@@ -14,7 +14,7 @@ import org.junit.Test;
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.Settings;
 import cn.strong.fastdfs.model.StoragePath;
-import cn.strong.fastdfs.utils.IOUtils;
+import cn.strong.fastdfs.utils.RxIOUtils;
 import cn.strong.fastdfs.utils.Seed;
 
 public class TrackerClientIT {
@@ -33,7 +33,7 @@ public class TrackerClientIT {
 
 	@After
 	public void destroy() {
-		IOUtils.closeQuietly(template);
+		RxIOUtils.closeQuietly(template);
 	}
 
 	@Test

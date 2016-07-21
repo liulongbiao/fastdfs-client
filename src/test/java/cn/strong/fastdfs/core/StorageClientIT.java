@@ -20,7 +20,7 @@ import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.Settings;
 import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.model.StorageServerInfo;
-import cn.strong.fastdfs.utils.IOUtils;
+import cn.strong.fastdfs.utils.RxIOUtils;
 
 /**
  * @author liulongbiao
@@ -39,7 +39,7 @@ public class StorageClientIT {
 
 	@After
 	public void destroy() {
-		IOUtils.closeQuietly(template);
+		RxIOUtils.closeQuietly(template);
 	}
 
 	@Test
