@@ -52,7 +52,7 @@ public class IOUtils {
 			return openFileChannel(file);
 		}, fc -> {
 			ReplaySubject<Integer> subject = ReplaySubject.create();
-			content.observeOn(Schedulers.io()).subscribe(buf -> {
+			content.observeOn(Schedulers.io(), true).subscribe(buf -> {
 				try {
 					int length = buf.readableBytes();
 					buf.readBytes(fc, length);
@@ -117,7 +117,7 @@ public class IOUtils {
 			return new ByteArrayOutputStream(1024);
 		}, output -> {
 			ReplaySubject<byte[]> subject = ReplaySubject.create();
-			content.observeOn(Schedulers.io()).subscribe(buf -> {
+			content.observeOn(Schedulers.io(), true).subscribe(buf -> {
 				try {
 					buf.readBytes(output, buf.readableBytes());
 				} catch (Exception e) {
