@@ -29,7 +29,7 @@ public class TrackerAddress {
 	 * @return Tracker 地址种子
 	 */
 	public static Seed<InetSocketAddress> createSeed(String uris) {
-		return createSeed(uris);
+		return createSeed(uris, Seed.PICK_ROUND_ROBIN);
 	}
 
 	/**
