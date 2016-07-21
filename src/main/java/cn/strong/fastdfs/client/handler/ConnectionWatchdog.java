@@ -32,7 +32,7 @@ public class ConnectionWatchdog extends ChannelInboundHandlerAdapter {
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 		if (cause instanceof FastdfsTimeoutException) {
-			LOG.info(cause.getMessage(), cause);
+			LOG.info(cause.getMessage());
 		} else {
 			LOG.error(cause.getMessage(), cause);
 		}
