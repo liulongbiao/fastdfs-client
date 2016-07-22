@@ -26,6 +26,9 @@ public class RxReceiver extends AbstractReceiver<ByteBuf> {
 	@Override
 	public boolean tryRead(ByteBuf in, Charset charset) {
 		if (length <= readed) {
+			if (!subject.hasThrowable()) {
+				subject.onCompleted();
+			}
 			return true;
 		}
 		int len = (int) Math.min(length - readed, in.readableBytes());
