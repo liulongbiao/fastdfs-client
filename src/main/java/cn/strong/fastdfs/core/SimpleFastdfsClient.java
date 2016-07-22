@@ -177,7 +177,7 @@ public class SimpleFastdfsClient {
 	 *            待写入的文件
 	 */
 	public void download(String path, File file) {
-		await(RxIOUtils.write(delegate.download(fromFullPath(path)), file));
+		RxIOUtils.write(delegate.download(fromFullPath(path)), file).toCompletable().await();
 	}
 
 	/**
