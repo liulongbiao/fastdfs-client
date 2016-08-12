@@ -3,18 +3,16 @@
  */
 package cn.strong.fastdfs.core;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.File;
 import java.net.InetSocketAddress;
-
-import rx.Observable;
 
 import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.utils.Seed;
+import io.netty.buffer.ByteBuf;
+import rx.Observable;
 
 /**
  * FastDFS 客户端
@@ -60,8 +58,6 @@ public class FastdfsClient {
 	 * <li>{@link io.netty.buffer.ByteBuf}</li>
 	 * </ul>
 	 * 
-	 * @param storage
-	 *            存储服务器信息，应该由 tracker 查询得到
 	 * @param content
 	 *            上传内容
 	 * @param size

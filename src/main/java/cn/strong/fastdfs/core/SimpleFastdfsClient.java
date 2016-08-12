@@ -7,13 +7,12 @@ import static cn.strong.fastdfs.model.StoragePath.fromFullPath;
 
 import java.io.File;
 
-import rx.Observable;
-
 import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.utils.RxIOUtils;
+import rx.Observable;
 
 /**
  * 简单 FastDFS 客户端
@@ -102,6 +101,33 @@ public class SimpleFastdfsClient {
 	}
 
 	/**
+	 * 上传文件，其中文件内容字段 content 的支持以下类型：
+	 * 
+	 * <ul>
+	 * <li>{@link java.io.File}</li>
+	 * <li>{@link java.io.InputStream}</li>
+	 * <li><code>byte[]</code></li>
+	 * <li>{@link java.nio.channels.ReadableByteChannel}</li>
+	 * <li>{@link io.netty.channel.FileRegion}</li>
+	 * <li>{@link io.netty.handler.stream.ChunkedInput}</li>
+	 * <li>{@link io.netty.buffer.ByteBuf}</li>
+	 * </ul>
+	 * 
+	 * @param content
+	 *            上传内容
+	 * @param size
+	 *            内容长度
+	 * @param ext
+	 *            扩展名
+	 * @param group
+	 *            分组
+	 * @return 服务器存储路径
+	 */
+	public String upload(Object content, long size, String ext, String group) {
+		return await(delegate.upload(content, size, ext, group).map(StoragePath::getFullPath));
+	}
+
+	/**
 	 * 上传 Appender 文件
 	 * 
 	 * @param bytes
@@ -155,6 +181,33 @@ public class SimpleFastdfsClient {
 			throw new FastdfsException("file does not exist.");
 		}
 		return await(delegate.uploadAppender(file, group).map(StoragePath::getFullPath));
+	}
+
+	/**
+	 * 上传 Appender 文件，其中文件内容字段 content 的支持以下类型：
+	 * 
+	 * <ul>
+	 * <li>{@link java.io.File}</li>
+	 * <li>{@link java.io.InputStream}</li>
+	 * <li><code>byte[]</code></li>
+	 * <li>{@link java.nio.channels.ReadableByteChannel}</li>
+	 * <li>{@link io.netty.channel.FileRegion}</li>
+	 * <li>{@link io.netty.handler.stream.ChunkedInput}</li>
+	 * <li>{@link io.netty.buffer.ByteBuf}</li>
+	 * </ul>
+	 * 
+	 * @param content
+	 *            上传内容
+	 * @param size
+	 *            内容长度
+	 * @param ext
+	 *            扩展名
+	 * @param group
+	 *            分组
+	 * @return 服务器存储路径
+	 */
+	public String uploadAppender(Object content, long size, String ext, String group) {
+		return await(delegate.upload(content, size, ext, group).map(StoragePath::getFullPath));
 	}
 
 	/**
