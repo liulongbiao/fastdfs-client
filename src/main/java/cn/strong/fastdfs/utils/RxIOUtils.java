@@ -3,8 +3,6 @@
  */
 package cn.strong.fastdfs.utils;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -12,6 +10,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
+import io.netty.buffer.ByteBuf;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.ReplaySubject;
@@ -71,7 +70,13 @@ public class RxIOUtils {
 		});
 	}
 
-	private static FileChannel openFileChannel(File file) {
+	/**
+	 * open FileChannel to write
+	 * 
+	 * @param file
+	 * @return
+	 */
+	public static FileChannel openFileChannel(File file) {
 		RxIOUtils.initFileToWrite(file);
 		try {
 			return FileChannel.open(file.toPath(), StandardOpenOption.WRITE);
@@ -85,7 +90,7 @@ public class RxIOUtils {
 	 * 
 	 * @param file
 	 */
-	private static void initFileToWrite(File file) {
+	public static void initFileToWrite(File file) {
 		if (file == null) {
 			throw new RuntimeException("file to write is not specified");
 		}
