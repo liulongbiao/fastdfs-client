@@ -3,9 +3,9 @@
  */
 package cn.strong.fastdfs.client.protocol.response;
 
-import io.netty.buffer.ByteBuf;
-
 import java.nio.charset.Charset;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Rx 响应接收器
@@ -31,7 +31,7 @@ public class RxReceiver extends AbstractReceiver<ByteBuf> {
 			}
 			return true;
 		}
-		int len = (int) Math.min(length - readed, in.readableBytes());
+		int len = (int) Math.min(length - readed, in.writerIndex() - in.readerIndex());
 		ByteBuf buf = in.readBytes(len);
 		subject.onNext(buf);
 		readed += len;
