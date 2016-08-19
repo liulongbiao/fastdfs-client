@@ -11,6 +11,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.util.ReferenceCountUtil;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.ReplaySubject;
@@ -58,6 +59,8 @@ public class RxIOUtils {
 					subject.onNext(length);
 				} catch (Exception e) {
 					subject.onError(e);
+				} finally {
+					ReferenceCountUtil.release(buf);
 				}
 			}, ex -> {
 				subject.onError(ex);
@@ -127,6 +130,8 @@ public class RxIOUtils {
 					buf.readBytes(output, buf.readableBytes());
 				} catch (Exception e) {
 					subject.onError(e);
+				} finally {
+					ReferenceCountUtil.release(buf);
 				}
 			}, ex -> {
 				subject.onError(ex);
