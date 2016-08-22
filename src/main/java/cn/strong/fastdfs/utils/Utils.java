@@ -4,14 +4,15 @@
 package cn.strong.fastdfs.utils;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
 
 import cn.strong.fastdfs.client.Consts;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * 工具类
@@ -52,7 +53,18 @@ public class Utils {
 	 * @return
 	 */
 	public static String readString(ByteBuf in, int length, Charset charset) {
-		return in.readBytes(length).toString(charset).trim();
+		ByteBuf buf = null;
+		try {
+			buf = in.readBytes(length);
+			return buf.toString(charset).trim();
+		} finally {
+			ReferenceCountUtil.safeRelease(buf);
+		}
+	}
+
+	public static void main(String[] args) {
+		ByteBuf buf = null;
+		ReferenceCountUtil.safeRelease(buf);
 	}
 
 	/**
