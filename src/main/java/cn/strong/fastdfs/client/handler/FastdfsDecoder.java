@@ -4,9 +4,6 @@
 package cn.strong.fastdfs.client.handler;
 
 import static cn.strong.fastdfs.client.CommandCodes.FDFS_PROTO_CMD_RESP;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ReplayingDecoder;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -15,6 +12,9 @@ import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.client.protocol.response.Receiver;
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.utils.Utils;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ReplayingDecoder;
 
 /**
  * FastDFS 响应解码器
@@ -81,4 +81,8 @@ public class FastdfsDecoder extends ReplayingDecoder<Void> {
 		checkpoint();
 	}
 
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		ConnectionWatchdog.onError(ctx, cause);
+	}
 }

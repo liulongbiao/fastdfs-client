@@ -3,15 +3,14 @@
  */
 package cn.strong.fastdfs.client.handler;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.timeout.IdleStateEvent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.strong.fastdfs.client.protocol.response.Receiver;
 import cn.strong.fastdfs.ex.FastdfsTimeoutException;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.IdleStateEvent;
 
 /**
  * 链接守护处理器
@@ -20,7 +19,7 @@ import cn.strong.fastdfs.ex.FastdfsTimeoutException;
  *
  */
 public class ConnectionWatchdog extends ChannelInboundHandlerAdapter {
-	private final Logger LOG = LoggerFactory.getLogger(ConnectionWatchdog.class);
+	private final static Logger LOG = LoggerFactory.getLogger(ConnectionWatchdog.class);
 
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -31,6 +30,10 @@ public class ConnectionWatchdog extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		onError(ctx, cause);
+	}
+
+	public static void onError(ChannelHandlerContext ctx, Throwable cause) {
 		if (cause instanceof FastdfsTimeoutException) {
 			LOG.info(cause.getMessage());
 		} else {
@@ -42,4 +45,5 @@ public class ConnectionWatchdog extends ChannelInboundHandlerAdapter {
 		}
 		ctx.close();
 	}
+
 }
