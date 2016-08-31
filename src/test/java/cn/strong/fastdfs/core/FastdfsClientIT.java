@@ -3,13 +3,8 @@
  */
 package cn.strong.fastdfs.core;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.util.CharsetUtil;
-
 import java.io.File;
 import java.net.InetSocketAddress;
-import java.nio.channels.FileChannel;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -19,14 +14,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import rx.Observable;
-import rx.subjects.ReplaySubject;
-
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.Settings;
 import cn.strong.fastdfs.model.StoragePath;
+import cn.strong.fastdfs.sink.FileSink;
 import cn.strong.fastdfs.utils.RxIOUtils;
 import cn.strong.fastdfs.utils.Seed;
+import io.netty.util.CharsetUtil;
 
 /**
  * @author liulongbiao
@@ -73,61 +67,40 @@ public class FastdfsClientIT {
 	@Ignore
 	public void testDownload() throws Exception {
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/04/02/wKgURFT9aMOARe1WALF9eCfe4O8163.mp3");
-		CountDownLatch latch = new CountDownLatch(1);
-		Observable<ByteBuf> content = client.download(spath);
-		Observable.using(() -> {
-			try {
-				File file = File.createTempFile("test", "mp3");
-				System.out.println("file: " + file.getAbsolutePath());
-				return FileChannel.open(file.toPath(), StandardOpenOption.WRITE);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}, ch -> {
-			ReplaySubject<Integer> subject = ReplaySubject.create();
-			content.subscribe(buf -> {
-				try {
-					int length = buf.readableBytes();
-					subject.onNext(length);
-					buf.readBytes(ch, length);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
+				.fromFullPath("group1/M00/15/92/wKgURFfGh0eAMEisAAAADTVhaBw940.inf");
+
+		File file = File.createTempFile("test", ".inf");
+		System.out.println(file.getAbsolutePath());
+		try (FileSink sink = new FileSink(file)) {
+			CountDownLatch latch = new CountDownLatch(1);
+			client.download(spath, sink, null).doAfterTerminate(latch::countDown).subscribe(len -> {
+				System.out.println("received: " + len);
 			}, ex -> {
-				subject.onError(ex);
+				ex.printStackTrace();
 			}, () -> {
-				subject.onCompleted();
+				System.out.println("completed");
 			});
-			return subject;
-		}, ch -> {
-			RxIOUtils.closeQuietly(ch);
-		}).doAfterTerminate(latch::countDown).subscribe(len -> {
-			System.out.println("received: " + len);
-		}, ex -> {
-			ex.printStackTrace();
-		}, () -> {
-			System.out.println("completed");
-		});
-		latch.await();
+			latch.await();
+		}
 	}
 
 	@Test
 	@Ignore
-	public void testDownload2() throws InterruptedException {
+	public void testDownload2() throws Exception {
 		StoragePath spath = StoragePath
 				.fromFullPath("group1/M00/04/02/wKgURFT9aMOARe1WALF9eCfe4O8163.mp3");
 		File file = new File("D:\\tmp\\test.mp3");
-		CountDownLatch latch = new CountDownLatch(1);
-		RxIOUtils.write(client.download(spath), file).doAfterTerminate(latch::countDown)
-				.subscribe(len -> {
-					System.out.println("received: " + len);
-				}, ex -> {
-					ex.printStackTrace();
-				}, () -> {
-					System.out.println("completed");
-				});
-		latch.await();
+		try (FileSink sink = new FileSink(file)) {
+			CountDownLatch latch = new CountDownLatch(1);
+			client.download(spath, sink, null).doAfterTerminate(latch::countDown).subscribe(len -> {
+				System.out.println("received: " + len);
+			}, ex -> {
+				ex.printStackTrace();
+			}, () -> {
+				System.out.println("completed");
+			});
+			latch.await();
+		}
 		System.out.println("file size: " + file.length());
 	}
 }

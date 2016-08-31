@@ -10,8 +10,9 @@ import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.model.StoragePath;
+import cn.strong.fastdfs.sink.Sink;
+import cn.strong.fastdfs.sink.SinkProgressListener;
 import cn.strong.fastdfs.utils.Seed;
-import io.netty.buffer.ByteBuf;
 import rx.Observable;
 
 /**
@@ -126,13 +127,15 @@ public class FastdfsClient {
 	 * 
 	 * @param spath
 	 *            服务器存储路径
-	 * @param output
-	 *            输出流
-	 * @return
+	 * @param sink
+	 *            内容处理
+	 * @param listener
+	 *            进度监听
+	 * @return 处理进度
 	 */
-	public Observable<ByteBuf> download(StoragePath spath) {
+	public Observable<Long> download(StoragePath spath, Sink sink, SinkProgressListener listener) {
 		return trackerClient.getDownloadStorage(spath).flatMap(info -> {
-			return storageClient.download(info, spath);
+			return storageClient.download(info, spath, sink, listener);
 		});
 	}
 

@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.Settings;
+import cn.strong.fastdfs.client.protocol.response.SimpleProgressListener;
 import cn.strong.fastdfs.utils.RxIOUtils;
 import cn.strong.fastdfs.utils.Seed;
 
@@ -48,7 +49,7 @@ public class SimpleFastdfsClientIT {
 	@Test
 	@Ignore
 	public void testDownload() {
-		String path = "group1/M00/0A/99/wKgURFeK0OOAGjXSAAAADSghvvI552.txt";
+		String path = "group1/M00/15/93/wKgURFfGi4-AeRRwAAAADSghvvI390.txt";
 		byte[] bytes = client.download(path);
 		String data = new String(bytes, UTF_8);
 		System.out.println("downloaded: " + data);
@@ -57,8 +58,8 @@ public class SimpleFastdfsClientIT {
 	@Test
 	@Ignore
 	public void testDownloadToFile() {
-		String path = "group1/M00/04/02/wKgURFT9aMOARe1WALF9eCfe4O8163.mp3";
+		String path = "group1/M00/15/93/wKgURFfGixqAfTr5AF65c7T1o9k418.zip";
 		File file = new File("D:\\tmp\\test.mp3");
-		client.download(path, file);
+		client.download(path, file, new SimpleProgressListener());
 	}
 }

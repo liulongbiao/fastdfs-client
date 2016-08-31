@@ -5,12 +5,9 @@ package cn.strong.fastdfs.core;
 
 import static cn.strong.fastdfs.client.protocol.request.storage.DownloadRequest.DEFAULT_OFFSET;
 import static cn.strong.fastdfs.client.protocol.request.storage.DownloadRequest.SIZE_UNLIMIT;
-import io.netty.buffer.ByteBuf;
 
 import java.io.File;
 import java.util.Objects;
-
-import rx.Observable;
 
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.protocol.request.storage.AppendRequest;
@@ -24,11 +21,14 @@ import cn.strong.fastdfs.client.protocol.request.storage.UploadAppenderRequest;
 import cn.strong.fastdfs.client.protocol.request.storage.UploadRequest;
 import cn.strong.fastdfs.client.protocol.response.EmptyReceiver;
 import cn.strong.fastdfs.client.protocol.response.MetadataReceiver;
-import cn.strong.fastdfs.client.protocol.response.RxReceiver;
+import cn.strong.fastdfs.client.protocol.response.SinkReceiver;
 import cn.strong.fastdfs.client.protocol.response.StoragePathReceiver;
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.model.StorageServerInfo;
+import cn.strong.fastdfs.sink.Sink;
+import cn.strong.fastdfs.sink.SinkProgressListener;
+import rx.Observable;
 
 /**
  * StorageClient
@@ -214,10 +214,15 @@ public class StorageClient {
 	 *            存储服务器信息，应该由 tracker 查询得到
 	 * @param spath
 	 *            服务器存储路径
+	 * @param sink
+	 *            内容处理
+	 * @param listener
+	 *            进度监听
 	 * @return
 	 */
-	public Observable<ByteBuf> download(StorageServerInfo storage, StoragePath spath) {
-		return download(storage, spath, DEFAULT_OFFSET, SIZE_UNLIMIT);
+	public Observable<Long> download(StorageServerInfo storage, StoragePath spath, Sink sink,
+			SinkProgressListener listener) {
+		return download(storage, spath, DEFAULT_OFFSET, SIZE_UNLIMIT, sink, listener);
 	}
 
 	/**
@@ -231,11 +236,16 @@ public class StorageClient {
 	 *            字节偏移量
 	 * @param size
 	 *            下载字节数
+	 * @param sink
+	 *            内容处理
+	 * @param listener
+	 *            进度监听
 	 * @return
 	 */
-	public Observable<ByteBuf> download(StorageServerInfo storage, StoragePath spath, int offset, int size) {
+	public Observable<Long> download(StorageServerInfo storage, StoragePath spath, int offset, int size, Sink sink,
+			SinkProgressListener listener) {
 		return template.execute(storage.getAddress(), new DownloadRequest(spath, offset, size),
-				new RxReceiver());
+				new SinkReceiver(sink, listener));
 	}
 
 	/**

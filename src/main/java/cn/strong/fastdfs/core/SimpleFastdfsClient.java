@@ -11,7 +11,9 @@ import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.model.StoragePath;
-import cn.strong.fastdfs.utils.RxIOUtils;
+import cn.strong.fastdfs.sink.ByteArraySink;
+import cn.strong.fastdfs.sink.FileSink;
+import cn.strong.fastdfs.sink.SinkProgressListener;
 import rx.Observable;
 
 /**
@@ -218,7 +220,27 @@ public class SimpleFastdfsClient {
 	 * @return 文件内容
 	 */
 	public byte[] download(String path) {
-		return await(RxIOUtils.toBytes(delegate.download(fromFullPath(path))));
+		return download(path, (SinkProgressListener) null);
+	}
+
+	/**
+	 * 下载文件
+	 * 
+	 * @param path
+	 *            服务器存储路径
+	 * @param listener
+	 *            进度监听
+	 * @return 文件内容
+	 */
+	public byte[] download(String path, SinkProgressListener listener) {
+		try (ByteArraySink sink = new ByteArraySink()) {
+			delegate.download(fromFullPath(path), sink, listener).toCompletable().await();
+			return sink.getBytes();
+		} catch (FastdfsException e) {
+			throw e;
+		} catch (Exception ex) {
+			throw new FastdfsException("download file to bytes error", ex);
+		}
 	}
 
 	/**
@@ -230,7 +252,27 @@ public class SimpleFastdfsClient {
 	 *            待写入的文件
 	 */
 	public void download(String path, File file) {
-		RxIOUtils.write(delegate.download(fromFullPath(path)), file).toCompletable().await();
+		download(path, file, (SinkProgressListener) null);
+	}
+
+	/**
+	 * 下载文件到指定文件中
+	 * 
+	 * @param path
+	 *            服务器存储路径
+	 * @param file
+	 *            待写入的文件
+	 * @param listener
+	 *            进度监听
+	 */
+	public void download(String path, File file, SinkProgressListener listener) {
+		try (FileSink sink = new FileSink(file)) {
+			delegate.download(fromFullPath(path), sink, listener).toCompletable().await();
+		} catch (FastdfsException e) {
+			throw e;
+		} catch (Exception ex) {
+			throw new FastdfsException("download file error", ex);
+		}
 	}
 
 	/**

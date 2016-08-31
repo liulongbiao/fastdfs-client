@@ -3,12 +3,11 @@
  */
 package cn.strong.fastdfs.core;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.After;
@@ -20,6 +19,7 @@ import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.Settings;
 import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.model.StorageServerInfo;
+import cn.strong.fastdfs.sink.ByteArraySink;
 import cn.strong.fastdfs.utils.RxIOUtils;
 
 /**
@@ -173,13 +173,15 @@ public class StorageClientIT {
 	public void testDownload() throws InterruptedException, IOException {
 		StorageServerInfo info = new StorageServerInfo("group1", "192.168.20.68", 23000);
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/0A/97/wKgURFeI0ZyEeorsAAAAADVhaBw380.inf");
+				.fromFullPath("group1/M00/15/92/wKgURFfGh0eAMEisAAAADTVhaBw940.inf");
 		CountDownLatch latch = new CountDownLatch(1);
-		client.download(info, spath).doAfterTerminate(latch::countDown).subscribe(buf -> {
-			System.out.println("data: " + buf.toString(UTF_8));
+		ByteArraySink sink = new ByteArraySink();
+		client.download(info, spath, sink, null).doAfterTerminate(latch::countDown).subscribe(buf -> {
+			System.out.println("readed: " + buf);
 		}, ex -> {
 			ex.printStackTrace();
 		}, () -> {
+			System.out.println("data: " + new String(sink.getBytes(), StandardCharsets.UTF_8));
 			System.out.println("completed");
 		});
 		latch.await();
