@@ -40,4 +40,13 @@ public class FileSink implements Sink {
 		}
 	}
 
+	/**
+	 * 获取底层的文件
+	 * 
+	 * @return
+	 */
+	public File getFile() {
+		return this.file;
+	}
+
 }
