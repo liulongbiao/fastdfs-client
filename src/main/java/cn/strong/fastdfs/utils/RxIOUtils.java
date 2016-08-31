@@ -3,18 +3,11 @@
  */
 package cn.strong.fastdfs.utils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.util.ReferenceCountUtil;
-import rx.Observable;
-import rx.schedulers.Schedulers;
-import rx.subjects.ReplaySubject;
 
 /**
  * IO 工具类
@@ -36,41 +29,6 @@ public class RxIOUtils {
 		} catch (IOException ioe) {
 			// ignore
 		}
-	}
-
-	/**
-	 * 将 Observable<ByteBuf> 写到文件中
-	 * 
-	 * @param content
-	 *            内容
-	 * @param file
-	 *            文件
-	 * @return 读取字节数 Observable
-	 */
-	public static Observable<Integer> write(Observable<ByteBuf> content, File file) {
-		return Observable.using(() -> {
-			return openFileChannel(file);
-		}, fc -> {
-			ReplaySubject<Integer> subject = ReplaySubject.create();
-			content.observeOn(Schedulers.io(), true).subscribe(buf -> {
-				try {
-					int length = buf.readableBytes();
-					buf.readBytes(fc, length);
-					subject.onNext(length);
-				} catch (Exception e) {
-					subject.onError(e);
-				} finally {
-					ReferenceCountUtil.release(buf);
-				}
-			}, ex -> {
-				subject.onError(ex);
-			}, () -> {
-				subject.onCompleted();
-			});
-			return subject;
-		}, fc -> {
-			RxIOUtils.closeQuietly(fc);
-		});
 	}
 
 	/**
@@ -114,34 +72,4 @@ public class RxIOUtils {
 		}
 	}
 
-	/**
-	 * 将 Observable<ByteBuf> 转换为 byte[]
-	 * 
-	 * @param content
-	 * @return
-	 */
-	public static Observable<byte[]> toBytes(Observable<ByteBuf> content) {
-		return Observable.using(() -> {
-			return new ByteArrayOutputStream(1024);
-		}, output -> {
-			ReplaySubject<byte[]> subject = ReplaySubject.create();
-			content.observeOn(Schedulers.io(), true).subscribe(buf -> {
-				try {
-					buf.readBytes(output, buf.readableBytes());
-				} catch (Exception e) {
-					subject.onError(e);
-				} finally {
-					ReferenceCountUtil.release(buf);
-				}
-			}, ex -> {
-				subject.onError(ex);
-			}, () -> {
-				subject.onNext(output.toByteArray());
-				subject.onCompleted();
-			});
-			return subject;
-		}, output -> {
-			RxIOUtils.closeQuietly(output);
-		});
-	}
 }
