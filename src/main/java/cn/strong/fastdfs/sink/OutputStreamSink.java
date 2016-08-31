@@ -11,13 +11,15 @@ import cn.strong.fastdfs.utils.RxIOUtils;
 import io.netty.buffer.ByteBuf;
 
 /**
+ * 基于 OutputStream 的 Sink
+ * 
  * @author liulongbiao
  *
  */
-public class OutoutStreamSink implements Sink {
+public class OutputStreamSink implements Sink {
 	final OutputStream output;
 
-	public OutoutStreamSink(OutputStream output) {
+	public OutputStreamSink(OutputStream output) {
 		this.output = Objects.requireNonNull(output, "output stream is required");
 	}
 
