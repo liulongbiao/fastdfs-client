@@ -6,14 +6,17 @@ package cn.strong.fastdfs.core;
 import static cn.strong.fastdfs.model.StoragePath.fromFullPath;
 
 import java.io.File;
+import java.net.InetSocketAddress;
 
 import cn.strong.fastdfs.client.Consts;
+import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.sink.ByteArraySink;
 import cn.strong.fastdfs.sink.FileSink;
 import cn.strong.fastdfs.sink.SinkProgressListener;
+import cn.strong.fastdfs.utils.Seed;
 import rx.Observable;
 
 /**
@@ -31,6 +34,10 @@ public class SimpleFastdfsClient {
 
 	public SimpleFastdfsClient(FastdfsClient delegate) {
 		this.delegate = delegate;
+	}
+
+	public SimpleFastdfsClient(FastdfsTemplate template, Seed<InetSocketAddress> seed) {
+		this.delegate = new FastdfsClient(template, seed);
 	}
 
 	/**
