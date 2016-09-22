@@ -42,6 +42,7 @@ public class SinkReceiver extends AbstractReceiver<Void> {
 	@Override
 	public boolean tryRead(ByteBuf in, Charset charset) {
 		if (length <= readed) {
+			progress();
 			complete();
 			return true;
 		}
@@ -55,15 +56,19 @@ public class SinkReceiver extends AbstractReceiver<Void> {
 		}
 
 		readed += len;
-		if (listener != null) {
-			listener.onProgress(readed, length);
-		}
+		progress();
 
 		if (length <= readed) {
 			complete();
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	private void progress() {
+		if (listener != null) {
+			listener.onProgress(readed, length);
 		}
 	}
 
