@@ -5,12 +5,12 @@ package cn.strong.fastdfs.client.protocol.response;
 
 import static cn.strong.fastdfs.client.Consts.FDFS_FIELD_SEPERATOR;
 import static cn.strong.fastdfs.client.Consts.FDFS_RECORD_SEPERATOR;
-import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
 
 import cn.strong.fastdfs.model.Metadata;
 import cn.strong.fastdfs.utils.Utils;
+import io.netty.buffer.ByteBuf;
 
 /**
  * 元数据响应接收器
@@ -38,8 +38,7 @@ public class MetadataReceiver extends AbstractReceiver<Metadata> {
 				result.append(kv[0], kv[1]);
 			}
 		}
-		subject.onNext(result);
-		subject.onCompleted();
+		promise.complete(result);
 		return true;
 	}
 
