@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.channels.GatheringByteChannel;
 import java.util.Objects;
 
-import cn.strong.fastdfs.utils.RxIOUtils;
+import cn.strong.fastdfs.utils.IOUtils;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -25,7 +25,7 @@ public class GatheringByteChannelSink implements Sink {
 
 	@Override
 	public void close() throws IOException {
-		RxIOUtils.closeQuietly(channel);
+		IOUtils.closeQuietly(channel);
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import java.nio.file.StandardOpenOption;
  * @author liulongbiao
  *
  */
-public class RxIOUtils {
+public class IOUtils {
 	/**
 	 * 关闭
 	 * 
@@ -32,13 +32,13 @@ public class RxIOUtils {
 	}
 
 	/**
-	 * open FileChannel to write
+	 * 打开待写入的 FileChannel
 	 * 
 	 * @param file
 	 * @return
 	 */
 	public static FileChannel openFileChannel(File file) {
-		RxIOUtils.initFileToWrite(file);
+		IOUtils.initFileToWrite(file);
 		try {
 			return FileChannel.open(file.toPath(), StandardOpenOption.WRITE);
 		} catch (IOException e) {
