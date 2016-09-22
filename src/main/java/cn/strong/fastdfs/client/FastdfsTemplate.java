@@ -3,22 +3,20 @@
  */
 package cn.strong.fastdfs.client;
 
-import io.netty.channel.Channel;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.pool.FixedChannelPool;
-import io.netty.util.concurrent.Future;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.PreDestroy;
-
-import rx.Observable;
 
 import cn.strong.fastdfs.client.protocol.request.Request;
 import cn.strong.fastdfs.client.protocol.response.Receiver;
 import cn.strong.fastdfs.ex.FastdfsException;
+import io.netty.channel.Channel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.pool.FixedChannelPool;
+import io.netty.util.concurrent.Future;
 
 /**
  * FastDFS 连接交互模板类
@@ -47,7 +45,7 @@ public class FastdfsTemplate implements Closeable {
 	 * @param decoder
 	 * @return
 	 */
-	public <T> Observable<T> execute(InetSocketAddress addr, Request request, Receiver<T> receiver) {
+	public <T> CompletableFuture<T> execute(InetSocketAddress addr, Request request, Receiver<T> receiver) {
 		FixedChannelPool pool = poolMap.get(addr);
 		pool.acquire().addListener((Future<Channel> f) -> {
 			if (f.isCancelled()) {
@@ -56,9 +54,9 @@ public class FastdfsTemplate implements Closeable {
 				receiver.tryError(f.cause());
 			} else {
 				Channel ch = f.getNow();
-				receiver.observable().doAfterTerminate(() -> {
+				receiver.promise().whenCompleteAsync((data, ex) -> {
 					pool.release(ch);
-				}).subscribe();
+				});
 				try {
 					ch.attr(Receiver.RECEIVER).set(receiver);
 					ch.writeAndFlush(request);
@@ -67,7 +65,7 @@ public class FastdfsTemplate implements Closeable {
 				}
 			}
 		});
-		return receiver.observable();
+		return receiver.promise();
 	}
 
 	@PreDestroy
