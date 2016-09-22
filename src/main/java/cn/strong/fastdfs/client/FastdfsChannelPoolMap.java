@@ -3,6 +3,16 @@
  */
 package cn.strong.fastdfs.client;
 
+import java.net.InetSocketAddress;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.strong.fastdfs.client.handler.ConnectionWatchdog;
+import cn.strong.fastdfs.client.handler.FastdfsDecoder;
+import cn.strong.fastdfs.client.handler.FastdfsEncoder;
+import cn.strong.fastdfs.client.protocol.response.Receiver;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -14,17 +24,6 @@ import io.netty.channel.pool.FixedChannelPool;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.IdleStateHandler;
-
-import java.net.InetSocketAddress;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cn.strong.fastdfs.client.handler.ConnectionWatchdog;
-import cn.strong.fastdfs.client.handler.FastdfsDecoder;
-import cn.strong.fastdfs.client.handler.FastdfsEncoder;
-import cn.strong.fastdfs.client.protocol.response.Receiver;
 
 /**
  * Fastdfs 连接池组
@@ -67,7 +66,7 @@ public class FastdfsChannelPoolMap extends
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("channel released : {}", ch.toString());
 			}
-			ch.attr(Receiver.RECEIVER).remove();
+			ch.attr(Receiver.RECEIVER).set(null);
 		}
 
 		public void channelAcquired(Channel ch) throws Exception {
