@@ -6,11 +6,10 @@ package cn.strong.fastdfs.core;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import rx.Observable;
 
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.protocol.request.tracker.FindDownloadStoragesRequest;
@@ -47,7 +46,7 @@ public class TrackerClient {
 	 * 获取上传存储服务器地址
 	 * 
 	 */
-	public Observable<StorageServerInfo> getUploadStorage() {
+	public CompletableFuture<StorageServerInfo> getUploadStorage() {
 		return getUploadStorage(null);
 	}
 
@@ -56,7 +55,7 @@ public class TrackerClient {
 	 * 
 	 * @param group
 	 */
-	public Observable<StorageServerInfo> getUploadStorage(String group) {
+	public CompletableFuture<StorageServerInfo> getUploadStorage(String group) {
 		return template.execute(seed.pick(), new GetUploadStorageRequest(group),
 				new StorageServerInfoReceiver());
 	}
@@ -66,9 +65,9 @@ public class TrackerClient {
 	 * 
 	 * @param path
 	 */
-	public Observable<StorageServerInfo> getDownloadStorage(StoragePath path) {
+	public CompletableFuture<StorageServerInfo> getDownloadStorage(StoragePath path) {
 		return template.execute(seed.pick(), new GetDownloadStorageRequest(path),
-				new StorageServerInfoListReceiver()).map(Utils::head);
+				new StorageServerInfoListReceiver()).thenApply(Utils::head);
 	}
 
 	/**
@@ -76,9 +75,9 @@ public class TrackerClient {
 	 * 
 	 * @param path
 	 */
-	public Observable<StorageServerInfo> getUpdateStorage(StoragePath path) {
+	public CompletableFuture<StorageServerInfo> getUpdateStorage(StoragePath path) {
 		return template.execute(seed.pick(), new GetUpdateStorageRequest(path),
-				new StorageServerInfoListReceiver()).map(Utils::head);
+				new StorageServerInfoListReceiver()).thenApply(Utils::head);
 	}
 
 	/**
@@ -87,7 +86,7 @@ public class TrackerClient {
 	 * @param path
 	 * @return
 	 */
-	public Observable<List<StorageServerInfo>> findDownloadStorages(StoragePath path) {
+	public CompletableFuture<List<StorageServerInfo>> findDownloadStorages(StoragePath path) {
 		return template.execute(seed.pick(), new FindDownloadStoragesRequest(path),
 				new StorageServerInfoListReceiver());
 	}

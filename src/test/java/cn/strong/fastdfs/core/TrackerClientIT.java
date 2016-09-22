@@ -14,7 +14,7 @@ import org.junit.Test;
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.Settings;
 import cn.strong.fastdfs.model.StoragePath;
-import cn.strong.fastdfs.utils.RxIOUtils;
+import cn.strong.fastdfs.utils.IOUtils;
 import cn.strong.fastdfs.utils.Seed;
 
 public class TrackerClientIT {
@@ -33,18 +33,20 @@ public class TrackerClientIT {
 
 	@After
 	public void destroy() {
-		RxIOUtils.closeQuietly(template);
+		IOUtils.closeQuietly(template);
 	}
 
 	@Test
 	@Ignore
 	public void testGetUploadStorageString() throws InterruptedException, IOException {
 		CountDownLatch latch = new CountDownLatch(1);
-		client.getUploadStorage("group1").doAfterTerminate(latch::countDown)
-				.subscribe(System.out::println, ex -> {
-			ex.printStackTrace();
-		}, () -> {
-			System.out.println("completed");
+		client.getUploadStorage("group1").whenComplete((data, ex) -> {
+			if(ex != null) {
+				ex.printStackTrace();
+			} else {
+				System.out.println(data);
+			}
+			latch.countDown();
 		});
 		latch.await();
 	}
@@ -55,11 +57,13 @@ public class TrackerClientIT {
 		CountDownLatch latch = new CountDownLatch(1);
 		StoragePath spath = StoragePath
 				.fromFullPath("group1/M00/09/FE/wKgURFbQBVSAcFjdAAAADTVhaBw216.inf");
-		client.getDownloadStorage(spath).doAfterTerminate(latch::countDown)
-				.subscribe(System.out::println, ex -> {
-			ex.printStackTrace();
-		}, () -> {
-			System.out.println("completed");
+		client.getDownloadStorage(spath).whenComplete((data, ex) -> {
+			if(ex != null) {
+				ex.printStackTrace();
+			} else {
+				System.out.println(data);
+			}
+			latch.countDown();
 		});
 		latch.await();
 	}
@@ -70,13 +74,14 @@ public class TrackerClientIT {
 		CountDownLatch latch = new CountDownLatch(1);
 		StoragePath spath = StoragePath
 				.fromFullPath("group1/M00/09/FE/wKgURFbQBVSAcFjdAAAADTVhaBw216.inf");
-		client.findDownloadStorages(spath).doAfterTerminate(latch::countDown).subscribe(list -> {
-			System.out.println(list.size());
-			list.forEach(System.out::println);
-		}, ex -> {
-			ex.printStackTrace();
-		}, () -> {
-			System.out.println("completed");
+		client.findDownloadStorages(spath).whenComplete((list, ex) -> {
+			if (ex != null) {
+				ex.printStackTrace();
+			} else {
+				System.out.println(list.size());
+				list.forEach(System.out::println);
+			}
+			latch.countDown();
 		});
 		latch.await();
 	}
