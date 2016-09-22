@@ -9,19 +9,13 @@ package cn.strong.fastdfs.sink;
  * @author liulongbiao
  *
  */
+@FunctionalInterface
 public interface SinkProgressListener {
-
-	/**
-	 * 处理初始化总长度事件
-	 * 
-	 * @param length
-	 */
-	void onInitLength(long length);
 
 	/**
 	 * 处理进度事件
 	 * 
 	 * @param progress
 	 */
-	void onProgress(long progress);
+	void onProgress(long progress, long total);
 }
