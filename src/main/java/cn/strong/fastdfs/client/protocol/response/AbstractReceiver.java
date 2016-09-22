@@ -3,8 +3,7 @@
  */
 package cn.strong.fastdfs.client.protocol.response;
 
-import rx.Observable;
-import rx.subjects.ReplaySubject;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 抽象接收器类
@@ -13,15 +12,15 @@ import rx.subjects.ReplaySubject;
  *
  */
 public abstract class AbstractReceiver<T> implements Receiver<T> {
-	protected ReplaySubject<T> subject = ReplaySubject.create();
+	protected CompletableFuture<T> promise = new CompletableFuture<>();
 
 	@Override
 	public void tryError(Throwable ex) {
-		subject.onError(ex);
+		promise.completeExceptionally(ex);
 	}
 
 	@Override
-	public Observable<T> observable() {
-		return subject.asObservable();
+	public CompletableFuture<T> promise() {
+		return promise;
 	}
 }
