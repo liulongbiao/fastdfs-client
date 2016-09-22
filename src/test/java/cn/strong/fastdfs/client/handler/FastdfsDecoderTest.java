@@ -2,9 +2,6 @@ package cn.strong.fastdfs.client.handler;
 
 import static cn.strong.fastdfs.client.CommandCodes.FDFS_PROTO_CMD_RESP;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.embedded.EmbeddedChannel;
 
 import java.nio.charset.Charset;
 
@@ -14,18 +11,21 @@ import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.client.protocol.response.AbstractReceiver;
 import cn.strong.fastdfs.client.protocol.response.Receiver;
 import cn.strong.fastdfs.utils.Utils;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.embedded.EmbeddedChannel;
 
 public class FastdfsDecoderTest {
 
 	@Test
 	public void test() {
 		StubReceiver receiver = new StubReceiver();
-		receiver.observable().subscribe(txt -> {
-			System.out.println("response: " + txt);
-		}, ex -> {
-			ex.printStackTrace();
-		}, () -> {
-			System.out.println("completed");
+		receiver.promise().whenComplete((data, ex) -> {
+			if (ex != null) {
+				ex.printStackTrace();
+			} else {
+				System.out.println("response: " + data);
+			}
 		});
 
 		String msg = "Hello world!";
@@ -57,8 +57,7 @@ public class FastdfsDecoderTest {
 		@Override
 		public boolean tryRead(ByteBuf in, Charset charset) {
 			String txt = Utils.readString(in, (int) length, charset);
-			subject.onNext(txt);
-			subject.onCompleted();
+			promise.complete(txt);
 			return true;
 		}
 	}
