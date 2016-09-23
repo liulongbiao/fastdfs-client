@@ -5,6 +5,7 @@ package cn.strong.fastdfs.core;
 
 import java.io.File;
 import java.net.InetSocketAddress;
+import java.util.concurrent.CompletableFuture;
 
 import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.client.FastdfsTemplate;
@@ -13,7 +14,6 @@ import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.sink.Sink;
 import cn.strong.fastdfs.sink.SinkProgressListener;
 import cn.strong.fastdfs.utils.Seed;
-import rx.Observable;
 
 /**
  * FastDFS 客户端
@@ -40,8 +40,8 @@ public class FastdfsClient {
 	 *            分组
 	 * @return
 	 */
-	public Observable<StoragePath> upload(File file, String group) {
-		return trackerClient.getUploadStorage(group).flatMap(info -> {
+	public CompletableFuture<StoragePath> upload(File file, String group) {
+		return trackerClient.getUploadStorage(group).thenCompose(info -> {
 			return storageClient.upload(info, file);
 		});
 	}
@@ -69,8 +69,8 @@ public class FastdfsClient {
 	 *            分组
 	 * @return
 	 */
-	public Observable<StoragePath> upload(Object content, long size, String ext, String group) {
-		return trackerClient.getUploadStorage(group).flatMap(info -> {
+	public CompletableFuture<StoragePath> upload(Object content, long size, String ext, String group) {
+		return trackerClient.getUploadStorage(group).thenCompose(info -> {
 			return storageClient.upload(info, content, size, ext);
 		});
 	}
@@ -84,8 +84,8 @@ public class FastdfsClient {
 	 *            分组
 	 * @return
 	 */
-	public Observable<StoragePath> uploadAppender(File file, String group) {
-		return trackerClient.getUploadStorage(group).flatMap(info -> {
+	public CompletableFuture<StoragePath> uploadAppender(File file, String group) {
+		return trackerClient.getUploadStorage(group).thenCompose(info -> {
 			return storageClient.uploadAppender(info, file);
 		});
 	}
@@ -115,9 +115,9 @@ public class FastdfsClient {
 	 *            分组
 	 * @return
 	 */
-	public Observable<StoragePath> uploadAppender(Object content, long size, String ext,
+	public CompletableFuture<StoragePath> uploadAppender(Object content, long size, String ext,
 			String group) {
-		return trackerClient.getUploadStorage(group).flatMap(info -> {
+		return trackerClient.getUploadStorage(group).thenCompose(info -> {
 			return storageClient.uploadAppender(info, content, size, ext);
 		});
 	}
@@ -133,8 +133,8 @@ public class FastdfsClient {
 	 *            进度监听
 	 * @return 处理进度
 	 */
-	public Observable<Long> download(StoragePath spath, Sink sink, SinkProgressListener listener) {
-		return trackerClient.getDownloadStorage(spath).flatMap(info -> {
+	public CompletableFuture<Void> download(StoragePath spath, Sink sink, SinkProgressListener listener) {
+		return trackerClient.getDownloadStorage(spath).thenCompose(info -> {
 			return storageClient.download(info, spath, sink, listener);
 		});
 	}
@@ -146,8 +146,8 @@ public class FastdfsClient {
 	 *            服务器存储路径
 	 * @return
 	 */
-	public Observable<Void> delete(StoragePath spath) {
-		return trackerClient.getUpdateStorage(spath).flatMap(info -> {
+	public CompletableFuture<Void> delete(StoragePath spath) {
+		return trackerClient.getUpdateStorage(spath).thenCompose(info -> {
 			return storageClient.delete(info, spath);
 		});
 	}
@@ -161,8 +161,8 @@ public class FastdfsClient {
 	 *            内容
 	 * @return
 	 */
-	public Observable<Void> append(StoragePath spath, byte[] bytes) {
-		return trackerClient.getUpdateStorage(spath).flatMap(info -> {
+	public CompletableFuture<Void> append(StoragePath spath, byte[] bytes) {
+		return trackerClient.getUpdateStorage(spath).thenCompose(info -> {
 			return storageClient.append(info, spath, bytes);
 		});
 	}
@@ -178,8 +178,8 @@ public class FastdfsClient {
 	 *            内容
 	 * @return
 	 */
-	public Observable<Void> modify(StoragePath spath, int offset, byte[] bytes) {
-		return trackerClient.getUpdateStorage(spath).flatMap(info -> {
+	public CompletableFuture<Void> modify(StoragePath spath, int offset, byte[] bytes) {
+		return trackerClient.getUpdateStorage(spath).thenCompose(info -> {
 			return storageClient.modify(info, spath, offset, bytes);
 		});
 	}
@@ -191,7 +191,7 @@ public class FastdfsClient {
 	 *            服务器存储路径
 	 * @return
 	 */
-	public Observable<Void> truncate(StoragePath spath) {
+	public CompletableFuture<Void> truncate(StoragePath spath) {
 		return truncate(spath, 0);
 	}
 
@@ -204,8 +204,8 @@ public class FastdfsClient {
 	 *            截取字节数
 	 * @return
 	 */
-	public Observable<Void> truncate(StoragePath spath, int truncatedSize) {
-		return trackerClient.getUpdateStorage(spath).flatMap(info -> {
+	public CompletableFuture<Void> truncate(StoragePath spath, int truncatedSize) {
+		return trackerClient.getUpdateStorage(spath).thenCompose(info -> {
 			return storageClient.truncate(info, spath, truncatedSize);
 		});
 	}
@@ -218,7 +218,7 @@ public class FastdfsClient {
 	 * @param metadata
 	 *            元数据
 	 */
-	public Observable<Void> setMetadata(StoragePath spath, Metadata metadata) {
+	public CompletableFuture<Void> setMetadata(StoragePath spath, Metadata metadata) {
 		return setMetadata(spath, metadata, Consts.STORAGE_SET_METADATA_FLAG_OVERWRITE);
 	}
 
@@ -232,8 +232,8 @@ public class FastdfsClient {
 	 * @param flag
 	 *            设置标识
 	 */
-	public Observable<Void> setMetadata(StoragePath spath, Metadata metadata, byte flag) {
-		return trackerClient.getUpdateStorage(spath).flatMap(info -> {
+	public CompletableFuture<Void> setMetadata(StoragePath spath, Metadata metadata, byte flag) {
+		return trackerClient.getUpdateStorage(spath).thenCompose(info -> {
 			return storageClient.setMetadata(info, spath, metadata, flag);
 		});
 	}
@@ -244,8 +244,8 @@ public class FastdfsClient {
 	 * @param spath
 	 * @return
 	 */
-	public Observable<Metadata> getMetadata(StoragePath spath) {
-		return trackerClient.getUpdateStorage(spath).flatMap(info -> {
+	public CompletableFuture<Metadata> getMetadata(StoragePath spath) {
+		return trackerClient.getUpdateStorage(spath).thenCompose(info -> {
 			return storageClient.getMetadata(info, spath);
 		});
 	}
