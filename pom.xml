@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cn.strong</groupId>
 	<artifactId>fastdfs-client</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.0.0</version>
 	<name>cn.strong:fastdfs-client</name>
 	<description>fastdfs-client is a FastDFS java client based on Netty 4.x</description>
 	<url>https://github.com/liulongbiao/fastdfs-client</url>

@@ -13,7 +13,7 @@ based on [Netty 4](http://netty.io) and [RxJava](https://github.com/ReactiveX/Rx
 <dependency>
 	<groupId>cn.strong</groupId>
 	<artifactId>fastdfs-client</artifactId>
-	<version>2.2.0</version>
+	<version>3.0.0</version>
 </dependency>
 ```
 
