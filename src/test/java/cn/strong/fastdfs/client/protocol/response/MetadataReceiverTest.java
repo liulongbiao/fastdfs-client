@@ -1,14 +1,14 @@
 package cn.strong.fastdfs.client.protocol.response;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.nio.charset.Charset;
 
 import org.junit.Test;
 
 import cn.strong.fastdfs.client.Consts;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class MetadataReceiverTest {
 
@@ -17,15 +17,15 @@ public class MetadataReceiverTest {
 		Charset charset = Charset.isSupported("GBK") ? Charset.forName("GBK") : UTF_8;
 		System.out.println("charset: " + charset.name());
 		MetadataReceiver receiver = new MetadataReceiver();
-		receiver.observable().subscribe(data -> {
-			System.out.println("received: ");
-			data.toMap().forEach((k, v) -> {
-				System.out.println(k + " : " + v);
-			});
-		}, ex -> {
-			ex.printStackTrace();
-		}, () -> {
-			System.out.println("completed");
+		receiver.promise().whenComplete((data, ex) -> {
+			if (ex != null) {
+				ex.printStackTrace();
+			} else {
+				System.out.println("received: ");
+				data.toMap().forEach((k, v) -> {
+					System.out.println(k + " : " + v);
+				});
+			}
 		});
 		ByteBuf buf = Unpooled.buffer();
 		StringBuilder sb = new StringBuilder();

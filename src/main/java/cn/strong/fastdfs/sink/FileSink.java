@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import cn.strong.fastdfs.utils.RxIOUtils;
+import cn.strong.fastdfs.utils.IOUtils;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -23,12 +23,12 @@ public class FileSink implements Sink {
 
 	public FileSink(File file) {
 		this.file = file;
-		this.channel = RxIOUtils.openFileChannel(file);
+		this.channel = IOUtils.openFileChannel(file);
 	}
 
 	@Override
 	public void close() throws IOException {
-		RxIOUtils.closeQuietly(channel);
+		IOUtils.closeQuietly(channel);
 	}
 
 	@Override

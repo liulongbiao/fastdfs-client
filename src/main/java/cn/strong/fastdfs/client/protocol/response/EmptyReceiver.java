@@ -3,9 +3,9 @@
  */
 package cn.strong.fastdfs.client.protocol.response;
 
-import io.netty.buffer.ByteBuf;
-
 import java.nio.charset.Charset;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * 空内容响应接收器
@@ -22,7 +22,8 @@ public class EmptyReceiver extends AbstractReceiver<Void> {
 
 	@Override
 	public boolean tryRead(ByteBuf in, Charset charset) {
-		subject.onCompleted();
+		promise.complete(null);
 		return true;
 	}
+
 }

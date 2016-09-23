@@ -4,7 +4,6 @@ import static cn.strong.fastdfs.client.Consts.FDFS_GROUP_LEN;
 import static cn.strong.fastdfs.client.Consts.FDFS_HOST_LEN;
 import static cn.strong.fastdfs.client.Consts.FDFS_STORAGE_LEN;
 import static cn.strong.fastdfs.utils.Utils.readString;
-import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -12,6 +11,7 @@ import java.util.List;
 
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.model.StorageServerInfo;
+import io.netty.buffer.ByteBuf;
 
 /**
  * 存储服务器信息列表响应接受器
@@ -51,8 +51,7 @@ public class StorageServerInfoListReceiver extends AbstractReceiver<List<Storage
             result.add(new StorageServerInfo(group, host, port));
         }
 
-        subject.onNext(result);
-        subject.onCompleted();
+		promise.complete(result);
         return true;
     }
 }

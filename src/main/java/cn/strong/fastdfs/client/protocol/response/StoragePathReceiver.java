@@ -2,12 +2,12 @@ package cn.strong.fastdfs.client.protocol.response;
 
 import static cn.strong.fastdfs.client.Consts.FDFS_GROUP_LEN;
 import static cn.strong.fastdfs.utils.Utils.readString;
-import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
 
 import cn.strong.fastdfs.ex.FastdfsException;
 import cn.strong.fastdfs.model.StoragePath;
+import io.netty.buffer.ByteBuf;
 
 /**
  * 存储路径响应接收器
@@ -31,8 +31,7 @@ public class StoragePathReceiver extends AbstractReceiver<StoragePath> {
         }
 		String group = readString(in, FDFS_GROUP_LEN, charset);
 		String path = readString(in, length - FDFS_GROUP_LEN, charset);
-        subject.onNext(new StoragePath(group, path));
-        subject.onCompleted();
+		promise.complete(new StoragePath(group, path));
         return true;
     }
 }

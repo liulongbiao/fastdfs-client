@@ -18,7 +18,7 @@ import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.Settings;
 import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.sink.FileSink;
-import cn.strong.fastdfs.utils.RxIOUtils;
+import cn.strong.fastdfs.utils.IOUtils;
 import cn.strong.fastdfs.utils.Seed;
 import io.netty.util.CharsetUtil;
 
@@ -42,7 +42,7 @@ public class FastdfsClientIT {
 
 	@After
 	public void destroy() {
-		RxIOUtils.closeQuietly(template);
+		IOUtils.closeQuietly(template);
 	}
 
 	@Test
@@ -50,16 +50,14 @@ public class FastdfsClientIT {
 	public void testUpload() throws InterruptedException {
 		byte[] bytes = "Hello Fastdfs".getBytes(CharsetUtil.UTF_8);
 		CountDownLatch latch = new CountDownLatch(1);
-		client.upload(bytes, bytes.length, "txt", null)
-				.subscribe(path -> {
-					System.out.println("path: " + path);
-				}, ex -> {
-					ex.printStackTrace();
-					latch.countDown();
-				}, () -> {
-					System.out.println("completed");
-					latch.countDown();
-				});
+		client.upload(bytes, bytes.length, "txt", null).whenComplete((data, ex) -> {
+			if (ex != null) {
+				ex.printStackTrace();
+			} else {
+				System.out.println("path: " + data);
+			}
+			latch.countDown();
+		});
 		latch.await();
 	}
 
@@ -67,18 +65,21 @@ public class FastdfsClientIT {
 	@Ignore
 	public void testDownload() throws Exception {
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/15/92/wKgURFfGh0eAMEisAAAADTVhaBw940.inf");
+				.valueOf("group1/M00/00/D9/wKgURFfkhdqAPTSXAAAADSghvvI438.txt");
 
 		File file = File.createTempFile("test", ".inf");
 		System.out.println(file.getAbsolutePath());
 		try (FileSink sink = new FileSink(file)) {
 			CountDownLatch latch = new CountDownLatch(1);
-			client.download(spath, sink, null).doAfterTerminate(latch::countDown).subscribe(len -> {
-				System.out.println("received: " + len);
-			}, ex -> {
-				ex.printStackTrace();
-			}, () -> {
-				System.out.println("completed");
+			client.download(spath, sink, (p, t) -> {
+				System.out.println("progress: " + p + "/" + t);
+			}).whenComplete((data, ex) -> {
+				if (ex != null) {
+					ex.printStackTrace();
+				} else {
+					System.out.println("completed");
+				}
+				latch.countDown();
 			});
 			latch.await();
 		}
@@ -88,16 +89,19 @@ public class FastdfsClientIT {
 	@Ignore
 	public void testDownload2() throws Exception {
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/04/02/wKgURFT9aMOARe1WALF9eCfe4O8163.mp3");
+				.valueOf("group1/M00/00/D9/wKgURFfkhzaANK7AALF9eC6mayQ365.mp3");
 		File file = new File("D:\\tmp\\test.mp3");
 		try (FileSink sink = new FileSink(file)) {
 			CountDownLatch latch = new CountDownLatch(1);
-			client.download(spath, sink, null).doAfterTerminate(latch::countDown).subscribe(len -> {
-				System.out.println("received: " + len);
-			}, ex -> {
-				ex.printStackTrace();
-			}, () -> {
-				System.out.println("completed");
+			client.download(spath, sink, (p, t) -> {
+				System.out.println("progress: " + p + "/" + t);
+			}).whenComplete((data, ex) -> {
+				if (ex != null) {
+					ex.printStackTrace();
+				} else {
+					System.out.println("completed");
+				}
+				latch.countDown();
 			});
 			latch.await();
 		}

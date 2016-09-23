@@ -8,6 +8,7 @@ import static cn.strong.fastdfs.client.protocol.request.storage.DownloadRequest.
 
 import java.io.File;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import cn.strong.fastdfs.client.FastdfsTemplate;
 import cn.strong.fastdfs.client.protocol.request.storage.AppendRequest;
@@ -28,7 +29,6 @@ import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.model.StorageServerInfo;
 import cn.strong.fastdfs.sink.Sink;
 import cn.strong.fastdfs.sink.SinkProgressListener;
-import rx.Observable;
 
 /**
  * StorageClient
@@ -52,7 +52,7 @@ public class StorageClient {
 	 *            文件
 	 * @return
 	 */
-	public Observable<StoragePath> upload(StorageServerInfo storage, File file) {
+	public CompletableFuture<StoragePath> upload(StorageServerInfo storage, File file) {
 		return template.execute(storage.getAddress(),
 				new UploadRequest(file,	storage.storePathIndex), 
 				new StoragePathReceiver());
@@ -80,7 +80,7 @@ public class StorageClient {
 	 * @param ext
 	 *            扩展名
 	 */
-	public Observable<StoragePath> upload(StorageServerInfo storage, Object content, long size,
+	public CompletableFuture<StoragePath> upload(StorageServerInfo storage, Object content, long size,
 			String ext) {
 		return template.execute(storage.getAddress(),
 				new UploadRequest(content, size, ext, storage.storePathIndex),
@@ -95,7 +95,7 @@ public class StorageClient {
 	 * @param file
 	 *            文件
 	 */
-	public Observable<StoragePath> uploadAppender(StorageServerInfo storage, File file) {
+	public CompletableFuture<StoragePath> uploadAppender(StorageServerInfo storage, File file) {
 		return template.execute(storage.getAddress(),
 				new UploadAppenderRequest(file, storage.storePathIndex),
 				new StoragePathReceiver());
@@ -123,7 +123,7 @@ public class StorageClient {
 	 * @param ext
 	 *            扩展名
 	 */
-	public Observable<StoragePath> uploadAppender(StorageServerInfo storage, Object content,
+	public CompletableFuture<StoragePath> uploadAppender(StorageServerInfo storage, Object content,
 			long size, String ext) {
 		return template.execute(storage.getAddress(),
 				new UploadAppenderRequest(content, size, ext, storage.storePathIndex),
@@ -141,7 +141,7 @@ public class StorageClient {
 	 *            内容字节数组
 	 * @return
 	 */
-	public Observable<Void> append(StorageServerInfo storage, StoragePath spath, byte[] bytes) {
+	public CompletableFuture<Void> append(StorageServerInfo storage, StoragePath spath, byte[] bytes) {
 		return template.execute(storage.getAddress(),
 				new AppendRequest(bytes, bytes.length, spath),
 				new EmptyReceiver());
@@ -160,7 +160,7 @@ public class StorageClient {
 	 *            内容字节数组
 	 * @return
 	 */
-	public Observable<Void> modify(StorageServerInfo storage, StoragePath spath, int offset,
+	public CompletableFuture<Void> modify(StorageServerInfo storage, StoragePath spath, int offset,
 			byte[] bytes) {
 		return template.execute(storage.getAddress(), 
 				new ModifyRequest(bytes, bytes.length, spath, offset),
@@ -175,7 +175,7 @@ public class StorageClient {
 	 * @param spath
 	 *            服务器存储路径
 	 */
-	public Observable<Void> delete(StorageServerInfo storage, StoragePath spath) {
+	public CompletableFuture<Void> delete(StorageServerInfo storage, StoragePath spath) {
 		return template.execute(storage.getAddress(), new DeleteRequest(spath),
 				new EmptyReceiver());
 	}
@@ -188,7 +188,7 @@ public class StorageClient {
 	 * @param spath
 	 *            服务器存储路径
 	 */
-	public Observable<Void> truncate(StorageServerInfo storage, StoragePath spath) {
+	public CompletableFuture<Void> truncate(StorageServerInfo storage, StoragePath spath) {
 		return truncate(storage, spath, 0);
 	}
 
@@ -202,7 +202,7 @@ public class StorageClient {
 	 * @param truncatedSize
 	 *            截取文件大小
 	 */
-	public Observable<Void> truncate(StorageServerInfo storage, StoragePath spath, int truncatedSize) {
+	public CompletableFuture<Void> truncate(StorageServerInfo storage, StoragePath spath, int truncatedSize) {
 		return template.execute(storage.getAddress(), new TruncateRequest(spath, truncatedSize),
 				new EmptyReceiver());
 	}
@@ -220,7 +220,7 @@ public class StorageClient {
 	 *            进度监听
 	 * @return
 	 */
-	public Observable<Long> download(StorageServerInfo storage, StoragePath spath, Sink sink,
+	public CompletableFuture<Void> download(StorageServerInfo storage, StoragePath spath, Sink sink,
 			SinkProgressListener listener) {
 		return download(storage, spath, DEFAULT_OFFSET, SIZE_UNLIMIT, sink, listener);
 	}
@@ -242,8 +242,8 @@ public class StorageClient {
 	 *            进度监听
 	 * @return
 	 */
-	public Observable<Long> download(StorageServerInfo storage, StoragePath spath, int offset, int size, Sink sink,
-			SinkProgressListener listener) {
+	public CompletableFuture<Void> download(StorageServerInfo storage, StoragePath spath, int offset, int size,
+			Sink sink, SinkProgressListener listener) {
 		return template.execute(storage.getAddress(), new DownloadRequest(spath, offset, size),
 				new SinkReceiver(sink, listener));
 	}
@@ -261,7 +261,7 @@ public class StorageClient {
 	 *            设置标识
 	 * @return
 	 */
-	public Observable<Void> setMetadata(StorageServerInfo storage, StoragePath spath,
+	public CompletableFuture<Void> setMetadata(StorageServerInfo storage, StoragePath spath,
 			Metadata metadata, byte flag) {
 		return template.execute(storage.getAddress(),
 				new SetMetadataRequest(spath, metadata, flag),
@@ -277,7 +277,7 @@ public class StorageClient {
 	 *            服务器存储路径
 	 * @return
 	 */
-	public Observable<Metadata> getMetadata(StorageServerInfo storage, StoragePath path) {
+	public CompletableFuture<Metadata> getMetadata(StorageServerInfo storage, StoragePath path) {
 		return template.execute(storage.getAddress(), new GetMetadataRequest(path),
 				new MetadataReceiver());
 	}

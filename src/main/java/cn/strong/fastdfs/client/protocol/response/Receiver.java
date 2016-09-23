@@ -3,12 +3,11 @@
  */
 package cn.strong.fastdfs.client.protocol.response;
 
+import java.nio.charset.Charset;
+import java.util.concurrent.CompletableFuture;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.util.AttributeKey;
-
-import java.nio.charset.Charset;
-
-import rx.Observable;
 
 /**
  * 响应读取器
@@ -55,9 +54,9 @@ public interface Receiver<T> {
 	void tryError(Throwable ex);
 
 	/**
-	 * 获取 Observable
+	 * 获取 promise
 	 * 
 	 * @return
 	 */
-	Observable<T> observable();
+	CompletableFuture<T> promise();
 }

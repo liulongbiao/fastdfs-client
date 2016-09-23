@@ -19,15 +19,18 @@ public class SinkReceiverTest {
 	public void test() {
 		try (ByteArraySink sink = new ByteArraySink()) {
 			Charset charset = UTF_8;
-			SinkReceiver receiver = new SinkReceiver(sink, new SimpleProgressListener());
-			receiver.observable().subscribe(data -> {
-				System.out.println("progress: " + data);
-			}, ex -> {
-				ex.printStackTrace();
-			}, () -> {
-				System.out.println(new String(sink.getBytes(), charset));
-				System.out.println("completed");
+			SinkReceiver receiver = new SinkReceiver(sink, (p, t) -> {
+				System.out.println("progress: " + p + "/" + t);
 			});
+			receiver.promise().whenComplete((data, ex) -> {
+				if (ex != null) {
+					ex.printStackTrace();
+				} else {
+					System.out.println(new String(sink.getBytes(), charset));
+					System.out.println("completed");
+				}
+			});
+
 			ByteBuf buf = Unpooled.buffer();
 			byte[] bytes1 = "aaaa".getBytes(charset);
 			byte[] bytes2 = "bbb".getBytes(charset);
@@ -47,14 +50,16 @@ public class SinkReceiverTest {
 	public void testEmpty() {
 		try (ByteArraySink sink = new ByteArraySink()) {
 			Charset charset = UTF_8;
-			SinkReceiver receiver = new SinkReceiver(sink, new SimpleProgressListener());
-			receiver.observable().subscribe(data -> {
-				System.out.println("progress: " + data);
-			}, ex -> {
-				ex.printStackTrace();
-			}, () -> {
-				System.out.println(new String(sink.getBytes(), charset));
-				System.out.println("completed");
+			SinkReceiver receiver = new SinkReceiver(sink, (p, t) -> {
+				System.out.println("progress: " + p + "/" + t);
+			});
+			receiver.promise().whenComplete((data, ex) -> {
+				if (ex != null) {
+					ex.printStackTrace();
+				} else {
+					System.out.println(new String(sink.getBytes(), charset));
+					System.out.println("completed");
+				}
 			});
 			ByteBuf buf = Unpooled.EMPTY_BUFFER;
 			receiver.setLength(0);

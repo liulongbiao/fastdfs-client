@@ -25,10 +25,7 @@ based on [Netty 4](http://netty.io) and [RxJava](https://github.com/ReactiveX/Rx
 以及 `Seed<InetSocketAddress>` 来选取 tracker URL。
 `FastdfsTemplate` 具有生命周期，它维护了一个通道连接池以及 IO 线程组等资源。
 
-`SimpleFastdfsClient` 对 `FastdfsClient` 做了一层封装，平滑 RxJava 的学习曲线
-
-* 使用同步方法，降低未学过 RxJava 的同学的学习曲线
-* 存储路径使用全路径
+`SimpleFastdfsClient` 对 `FastdfsClient` 做了一层封装，采用同步方式，且存储路径也使用字符串全路径。
 
 ```java
 Settings settings = new Settings();

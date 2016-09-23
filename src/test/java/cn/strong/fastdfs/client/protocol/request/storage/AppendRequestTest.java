@@ -2,9 +2,6 @@ package cn.strong.fastdfs.client.protocol.request.storage;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.PooledByteBufAllocator;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -16,6 +13,9 @@ import cn.strong.fastdfs.client.CommandCodes;
 import cn.strong.fastdfs.client.Consts;
 import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.utils.Utils;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.PooledByteBufAllocator;
 
 public class AppendRequestTest {
 
@@ -24,7 +24,7 @@ public class AppendRequestTest {
 		Charset charset = UTF_8;
 		byte[] bytes = "\nappend fastdfs".getBytes(charset);
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/0A/97/wKgURFeI0ZyEeorsAAAAADVhaBw380.inf");
+				.valueOf("group1/M00/0A/97/wKgURFeI0ZyEeorsAAAAADVhaBw380.inf");
 		AppendRequest request = new AppendRequest(bytes, bytes.length, spath);
 
 		ByteBufAllocator alloc = PooledByteBufAllocator.DEFAULT;

@@ -6,7 +6,7 @@ package cn.strong.fastdfs.sink;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import cn.strong.fastdfs.utils.RxIOUtils;
+import cn.strong.fastdfs.utils.IOUtils;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -24,7 +24,7 @@ public class ByteArraySink implements Sink {
 
 	@Override
 	public void close() throws IOException {
-		RxIOUtils.closeQuietly(output);
+		IOUtils.closeQuietly(output);
 	}
 
 	@Override
