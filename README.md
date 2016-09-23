@@ -1,7 +1,7 @@
 # fastdfs-client
 
 fastdfs-client is a [FastDFS](https://github.com/happyfish100/fastdfs) java client 
-based on [Netty 4](http://netty.io) and [RxJava](https://github.com/ReactiveX/RxJava) .
+based on [Netty 4](http://netty.io).
 
 ## 前置条件
 
