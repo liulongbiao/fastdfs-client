@@ -49,6 +49,8 @@ public class SimpleFastdfsClient {
 	private static <T> T await(CompletableFuture<T> f) {
 		try {
 			return f.get();
+		} catch (FastdfsException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new FastdfsException("get result from CompletableFuture error", e);
 		}
