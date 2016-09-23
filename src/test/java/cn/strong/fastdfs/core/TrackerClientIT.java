@@ -56,7 +56,7 @@ public class TrackerClientIT {
 	public void testGetDownloadStorage() throws InterruptedException {
 		CountDownLatch latch = new CountDownLatch(1);
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/09/FE/wKgURFbQBVSAcFjdAAAADTVhaBw216.inf");
+				.valueOf("group1/M00/09/FE/wKgURFbQBVSAcFjdAAAADTVhaBw216.inf");
 		client.getDownloadStorage(spath).whenComplete((data, ex) -> {
 			if(ex != null) {
 				ex.printStackTrace();
@@ -73,7 +73,7 @@ public class TrackerClientIT {
 	public void testFindDownloadStorages() throws InterruptedException {
 		CountDownLatch latch = new CountDownLatch(1);
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/09/FE/wKgURFbQBVSAcFjdAAAADTVhaBw216.inf");
+				.valueOf("group1/M00/09/FE/wKgURFbQBVSAcFjdAAAADTVhaBw216.inf");
 		client.findDownloadStorages(spath).whenComplete((list, ex) -> {
 			if (ex != null) {
 				ex.printStackTrace();

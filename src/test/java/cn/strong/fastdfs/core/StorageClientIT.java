@@ -116,7 +116,7 @@ public class StorageClientIT {
 		byte[] bytes = "\nappend fastdfs".getBytes();
 		StorageServerInfo info = new StorageServerInfo("group1", "192.168.20.68", 23000);
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/0A/97/wKgURFeI0ZyEeorsAAAAADVhaBw380.inf");
+				.valueOf("group1/M00/0A/97/wKgURFeI0ZyEeorsAAAAADVhaBw380.inf");
 		CountDownLatch latch = new CountDownLatch(1);
 		client.append(info, spath, bytes).whenComplete((data, ex) -> {
 			if (ex != null) {
@@ -135,7 +135,7 @@ public class StorageClientIT {
 		byte[] bytes = "modify fastdfs".getBytes();
 		StorageServerInfo info = new StorageServerInfo("group1", "192.168.20.68", 23000);
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/0A/96/wKgURFeIsj6AIL3lAAAADTVhaBw169.inf");
+				.valueOf("group1/M00/0A/96/wKgURFeIsj6AIL3lAAAADTVhaBw169.inf");
 		CountDownLatch latch = new CountDownLatch(1);
 		client.modify(info, spath, 12, bytes).whenComplete((data, ex) -> {
 			if (ex != null) {
@@ -153,7 +153,7 @@ public class StorageClientIT {
 	public void testDelete() throws InterruptedException, IOException {
 		StorageServerInfo info = new StorageServerInfo("group1", "192.168.20.68", 23000);
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/09/FF/wKgURFbQHjuACGt4AAAADTVhaBw716.inf");
+				.valueOf("group1/M00/09/FF/wKgURFbQHjuACGt4AAAADTVhaBw716.inf");
 		CountDownLatch latch = new CountDownLatch(1);
 		client.delete(info, spath).whenComplete((data, ex) -> {
 			if (ex != null) {
@@ -171,7 +171,7 @@ public class StorageClientIT {
 	public void testTruncate() throws InterruptedException, IOException {
 		StorageServerInfo info = new StorageServerInfo("group1", "192.168.20.68", 23000);
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/0A/97/wKgURFeI0ZyEeorsAAAAADVhaBw380.inf");
+				.valueOf("group1/M00/0A/97/wKgURFeI0ZyEeorsAAAAADVhaBw380.inf");
 		CountDownLatch latch = new CountDownLatch(1);
 		client.truncate(info, spath, 10).whenComplete((data, ex) -> {
 			if (ex != null) {
@@ -189,7 +189,7 @@ public class StorageClientIT {
 	public void testDownload() throws InterruptedException, IOException {
 		StorageServerInfo info = new StorageServerInfo("group1", "192.168.20.68", 23000);
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/15/92/wKgURFfGh0eAMEisAAAADTVhaBw940.inf");
+				.valueOf("group1/M00/15/92/wKgURFfGh0eAMEisAAAADTVhaBw940.inf");
 		CountDownLatch latch = new CountDownLatch(1);
 		ByteArraySink sink = new ByteArraySink();
 		client.download(info, spath, sink, (p, t) -> {

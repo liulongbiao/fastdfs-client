@@ -65,7 +65,7 @@ public class FastdfsClientIT {
 	@Ignore
 	public void testDownload() throws Exception {
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/00/D9/wKgURFfkhdqAPTSXAAAADSghvvI438.txt");
+				.valueOf("group1/M00/00/D9/wKgURFfkhdqAPTSXAAAADSghvvI438.txt");
 
 		File file = File.createTempFile("test", ".inf");
 		System.out.println(file.getAbsolutePath());
@@ -89,7 +89,7 @@ public class FastdfsClientIT {
 	@Ignore
 	public void testDownload2() throws Exception {
 		StoragePath spath = StoragePath
-				.fromFullPath("group1/M00/00/D9/wKgURFfkhzaANK7AALF9eC6mayQ365.mp3");
+				.valueOf("group1/M00/00/D9/wKgURFfkhzaANK7AALF9eC6mayQ365.mp3");
 		File file = new File("D:\\tmp\\test.mp3");
 		try (FileSink sink = new FileSink(file)) {
 			CountDownLatch latch = new CountDownLatch(1);

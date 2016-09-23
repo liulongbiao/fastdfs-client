@@ -3,7 +3,7 @@
  */
 package cn.strong.fastdfs.core;
 
-import static cn.strong.fastdfs.model.StoragePath.fromFullPath;
+import static cn.strong.fastdfs.model.StoragePath.valueOf;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -81,7 +81,7 @@ public class SimpleFastdfsClient {
 	 * @return 服务器存储路径
 	 */
 	public String upload(byte[] bytes, String ext, String group) {
-		return await(delegate.upload(bytes, bytes.length, ext, group).thenApply(StoragePath::getFullPath));
+		return await(delegate.upload(bytes, bytes.length, ext, group).thenApply(StoragePath::toString));
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class SimpleFastdfsClient {
 		if (file == null || !file.exists()) {
 			throw new FastdfsException("file does not exist.");
 		}
-		return await(delegate.upload(file, group).thenApply(StoragePath::getFullPath));
+		return await(delegate.upload(file, group).thenApply(StoragePath::toString));
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class SimpleFastdfsClient {
 	 * @return 服务器存储路径
 	 */
 	public String upload(Object content, long size, String ext, String group) {
-		return await(delegate.upload(content, size, ext, group).thenApply(StoragePath::getFullPath));
+		return await(delegate.upload(content, size, ext, group).thenApply(StoragePath::toString));
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class SimpleFastdfsClient {
 	 */
 	public String uploadAppender(byte[] bytes, String ext, String group) {
 		return await(delegate.uploadAppender(bytes, bytes.length, ext, group).thenApply(
-				StoragePath::getFullPath));
+				StoragePath::toString));
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class SimpleFastdfsClient {
 		if (file == null || !file.exists()) {
 			throw new FastdfsException("file does not exist.");
 		}
-		return await(delegate.uploadAppender(file, group).thenApply(StoragePath::getFullPath));
+		return await(delegate.uploadAppender(file, group).thenApply(StoragePath::toString));
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class SimpleFastdfsClient {
 	 * @return 服务器存储路径
 	 */
 	public String uploadAppender(Object content, long size, String ext, String group) {
-		return await(delegate.upload(content, size, ext, group).thenApply(StoragePath::getFullPath));
+		return await(delegate.upload(content, size, ext, group).thenApply(StoragePath::toString));
 	}
 
 	/**
@@ -243,7 +243,7 @@ public class SimpleFastdfsClient {
 	 */
 	public byte[] download(String path, SinkProgressListener listener) {
 		try (ByteArraySink sink = new ByteArraySink()) {
-			delegate.download(fromFullPath(path), sink, listener).get();
+			delegate.download(valueOf(path), sink, listener).get();
 			return sink.getBytes();
 		} catch (FastdfsException e) {
 			throw e;
@@ -276,7 +276,7 @@ public class SimpleFastdfsClient {
 	 */
 	public void download(String path, File file, SinkProgressListener listener) {
 		try (FileSink sink = new FileSink(file)) {
-			delegate.download(fromFullPath(path), sink, listener).get();
+			delegate.download(valueOf(path), sink, listener).get();
 		} catch (FastdfsException e) {
 			throw e;
 		} catch (Exception ex) {
@@ -291,7 +291,7 @@ public class SimpleFastdfsClient {
 	 *            服务器存储路径
 	 */
 	public void delete(String path) {
-		await(delegate.delete(fromFullPath(path)));
+		await(delegate.delete(valueOf(path)));
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class SimpleFastdfsClient {
 	 *            追加内容
 	 */
 	public void append(String path, byte[] bytes) {
-		await(delegate.append(fromFullPath(path), bytes));
+		await(delegate.append(valueOf(path), bytes));
 	}
 
 	/**
@@ -317,7 +317,7 @@ public class SimpleFastdfsClient {
 	 *            修改内容
 	 */
 	public void modify(String path, int offset, byte[] bytes) {
-		await(delegate.modify(fromFullPath(path), offset, bytes));
+		await(delegate.modify(valueOf(path), offset, bytes));
 	}
 
 	/**
@@ -339,7 +339,7 @@ public class SimpleFastdfsClient {
 	 *            截取字节数
 	 */
 	public void truncate(String path, int truncatedSize) {
-		await(delegate.truncate(fromFullPath(path), truncatedSize));
+		await(delegate.truncate(valueOf(path), truncatedSize));
 	}
 
 	/**
@@ -365,7 +365,7 @@ public class SimpleFastdfsClient {
 	 *            设置标识
 	 */
 	public void setMetadata(String path, Metadata metadata, byte flag) {
-		await(delegate.setMetadata(fromFullPath(path), metadata, flag));
+		await(delegate.setMetadata(valueOf(path), metadata, flag));
 	}
 
 	/**
@@ -375,6 +375,6 @@ public class SimpleFastdfsClient {
 	 * @return
 	 */
 	public Metadata getMetadata(String path) {
-		return await(delegate.getMetadata(fromFullPath(path)));
+		return await(delegate.getMetadata(valueOf(path)));
 	}
 }
