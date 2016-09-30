@@ -31,10 +31,7 @@ based on [Netty 4](http://netty.io).
 Settings settings = new Settings();
 FastdfsTemplate template = new FastdfsTemplate(settings);
 try {
-  List<InetSocketAddress> hosts = Arrays
-    .asList(new InetSocketAddress("192.168.20.68", 22122));
-  Seed<InetSocketAddress> seed = Seed.create(hosts, Seed.PICK_ROUND_ROBIN);
-  SimpleFastdfsClient client = new SimpleFastdfsClient(template, seed);
+  SimpleFastdfsClient client = new SimpleFastdfsClient(template, TrackerAddress.createSeed("192.168.20.68:22122"));
   // do sth. with SimpleFastdfsClient
 } finally {
   IOUtils.close(template);

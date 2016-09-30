@@ -4,9 +4,6 @@
 package cn.strong.fastdfs.core;
 
 import java.io.File;
-import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.After;
@@ -19,7 +16,7 @@ import cn.strong.fastdfs.client.Settings;
 import cn.strong.fastdfs.model.StoragePath;
 import cn.strong.fastdfs.sink.FileSink;
 import cn.strong.fastdfs.utils.IOUtils;
-import cn.strong.fastdfs.utils.Seed;
+import cn.strong.fastdfs.utils.TrackerAddress;
 import io.netty.util.CharsetUtil;
 
 /**
@@ -34,10 +31,7 @@ public class FastdfsClientIT {
 	@Before
 	public void setup() {
 		template = new FastdfsTemplate(new Settings());
-		List<InetSocketAddress> hosts = Arrays
-				.asList(new InetSocketAddress("192.168.20.68", 22122));
-		Seed<InetSocketAddress> seed = Seed.create(hosts, Seed.PICK_ROUND_ROBIN);
-		client = new FastdfsClient(template, seed);
+		client = new FastdfsClient(template, TrackerAddress.createSeed("192.168.20.68:22122"));
 	}
 
 	@After
