@@ -62,11 +62,6 @@ public class Utils {
 		}
 	}
 
-	public static void main(String[] args) {
-		ByteBuf buf = null;
-		ReferenceCountUtil.safeRelease(buf);
-	}
-
 	/**
 	 * 判断字符串为空
 	 * 
